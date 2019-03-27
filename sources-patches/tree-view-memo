@@ -1,0 +1,202 @@
+diff -ur sources/tree-view/config-overrides.js sources/tree-view-memo/config-overrides.js
+--- sources/tree-view/config-overrides.js	2019-03-25 21:14:50.000000000 +0900
++++ sources/tree-view-memo/config-overrides.js	2019-03-27 21:36:14.000000000 +0900
+@@ -7,10 +7,9 @@
+             "react" : "React",
+             "redux" : "Redux",
+             "react-dom" : "ReactDOM",
+-            "react-redux" : "ReactRedux",
+         }
+     }
+ 
+ 
+     return config;
+-}
+\ No newline at end of file
++}
+diff -ur sources/tree-view/package.json sources/tree-view-memo/package.json
+--- sources/tree-view/package.json	2019-03-27 20:53:22.000000000 +0900
++++ sources/tree-view-memo/package.json	2019-03-27 21:37:11.000000000 +0900
+@@ -11,7 +11,6 @@
+     "fps-emit": "file:../../fps-emit",
+     "react": "^16.6.0",
+     "react-dom": "^16.6.0",
+-    "react-redux": "^5.0.7",
+     "redux": "^4.0",
+     "schedule": "^0.3.0",
+     "seedrandom": "^2.4.4"
+diff -ur sources/tree-view/public/index.html sources/tree-view-memo/public/index.html
+--- sources/tree-view/public/index.html	2019-03-25 21:14:50.000000000 +0900
++++ sources/tree-view-memo/public/index.html	2019-03-27 21:36:14.000000000 +0900
+@@ -20,6 +20,5 @@
+     <script type="text/javascript" src="redux.min.js"></script>
+     <script type="text/javascript" src="react.production.min.js"></script>
+     <script type="text/javascript" src="react-dom.production.min.js"></script>
+-    <script type="text/javascript" src="react-redux.min.js"></script>
+   </body>
+ </html>
+diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-memo/src/containers/Node.js
+--- sources/tree-view/src/containers/Node.js	2019-03-25 21:14:50.000000000 +0900
++++ sources/tree-view-memo/src/containers/Node.js	2019-03-27 21:36:14.000000000 +0900
+@@ -1,73 +1,63 @@
+-import React from 'react'
+-import { Component } from 'react'
+-import { connect } from 'react-redux'
++import React, { useContext, useEffect, useMemo, useState } from 'react'
+ import * as actions from '../actions'
++import { ReduxContext } from '../index';
+ 
+-export class Node extends Component {
+-  handleIncrementClick = () => {
+-    const { increment, id } = this.props
+-    increment(id)
+-  }
+-
+-  handleAddChildClick = e => {
++const Node = ({ id, parentId }) => {
++  const store = useContext(ReduxContext);
++  const [state, setState] = useState(store.getState());
++  const handleIncrementClick = () => {
++    store.dispatch(actions.increment(id));
++  };
++  const handleAddChildClick = (e) => {
+     e.preventDefault()
+-
+-    const { addChild, createNode, id } = this.props
+-    const childId = createNode().nodeId
+-    addChild(id, childId)
+-  }
+-
+-  handleRemoveClick = e => {
++    const action = actions.createNode();
++    store.dispatch(action);
++    store.dispatch(actions.addChild(id, action.nodeId));
++  };
++  const handleRemoveClick = (e) => {
+     e.preventDefault()
+-
+-    const { removeChild, deleteNode, parentId, id } = this.props
+-    removeChild(parentId, id)
+-    deleteNode(id)
+-  }
+-
+-  renderChild = childId => {
+-    const { id } = this.props
+-    return (
+-      <li key={childId}>
+-        <ConnectedNode id={childId} parentId={id} />
+-      </li>
+-    )
+-  }
+-
+-  render() {
+-    const { counter, parentId, childIds, id } = this.props
+-    return (
+-      <div>
+-        Counter #{id}: {counter}
+-        {' '}
+-        <button className="increment" onClick={this.handleIncrementClick}>
+-          +
+-        </button>
+-        {' '}
+-        {typeof parentId !== 'undefined' &&
+-          <a href="#" className="deleteNode" onClick={this.handleRemoveClick} // eslint-disable-line jsx-a11y/href-no-hash
+-             style={{ color: 'lightgray', textDecoration: 'none' }}>
+-            Delete
++    store.dispatch(actions.removeChild(parentId, id));
++    store.dispatch(actions.deleteNode(id));
++  };
++  const renderChild = childId => (
++    <li key={childId}>
++      <Node id={childId} parentId={id} />
++    </li>
++  );
++  useEffect(() => {
++    const unsubscribe = store.subscribe(() => {
++      setState(store.getState());
++    });
++    return unsubscribe;
++  }, [store]);
++
++  const s = state[id];
++  return useMemo(() => (
++    <div>
++      Counter #{id}: {s.counter}
++      {' '}
++      <button className="increment" onClick={handleIncrementClick}>
++        +
++      </button>
++      {' '}
++      {typeof parentId !== 'undefined' &&
++        <a href="#" className="deleteNode" onClick={handleRemoveClick} // eslint-disable-line jsx-a11y/href-no-hash
++           style={{ color: 'lightgray', textDecoration: 'none' }}>
++          Delete
++        </a>
++      }
++      <ul>
++        {s.childIds.map(renderChild)}
++        <li key="add">
++          <a href="#" className="addChild" // eslint-disable-line jsx-a11y/href-no-hash
++            onClick={handleAddChildClick}
++          >
++            Add child
+           </a>
+-        }
+-        <ul>
+-          {childIds.map(this.renderChild)}
+-          <li key="add">
+-            <a href="#" className="addChild" // eslint-disable-line jsx-a11y/href-no-hash
+-              onClick={this.handleAddChildClick}
+-            >
+-              Add child
+-            </a>
+-          </li>
+-        </ul>
+-      </div>
+-    )
+-  }
+-}
+-
+-function mapStateToProps(state, ownProps) {
+-  return state[ownProps.id]
+-}
++        </li>
++      </ul>
++    </div>
++  ), [s]);
++};
+ 
+-const ConnectedNode = connect(mapStateToProps, actions)(Node)
+-export default ConnectedNode
++export default Node;
+diff -ur sources/tree-view/src/index.js sources/tree-view-memo/src/index.js
+--- sources/tree-view/src/index.js	2019-03-25 21:14:50.000000000 +0900
++++ sources/tree-view-memo/src/index.js	2019-03-27 21:36:14.000000000 +0900
+@@ -1,6 +1,5 @@
+ import React, { unstable_Profiler as Profiler } from "react";
+ import { render } from "react-dom";
+-import { Provider } from "react-redux";
+ import { configureStore } from "@acemarke/redux-starter-kit";
+ import seedrandom from "seedrandom";
+ import "fps-emit";
+@@ -10,6 +9,8 @@
+ import generateTree from "./generateTree";
+ import Node from "./containers/Node";
+ 
++export const ReduxContext = React.createContext();
++
+ seedrandom("test seed", { global: true });
+ 
+ const tree = generateTree(5000);
+@@ -46,9 +47,9 @@
+ 
+ render(
+   <Profiler id="appProfiler" onRender={onAppRendered}>
+-    <Provider store={store}>
++    <ReduxContext.Provider value={store}>
+       <Node id={0} />
+-    </Provider>
++    </ReduxContext.Provider>
+   </Profiler>,
+   document.getElementById("root")
+ );

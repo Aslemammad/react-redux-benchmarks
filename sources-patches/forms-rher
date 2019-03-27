@@ -1,0 +1,166 @@
+diff -ur sources/forms/config-overrides.js sources/forms-rher/config-overrides.js
+--- sources/forms/config-overrides.js	2019-03-03 12:27:19.000000000 +0900
++++ sources/forms-rher/config-overrides.js	2019-03-27 21:28:40.000000000 +0900
+@@ -7,7 +7,6 @@
+       react: "React",
+       redux: "Redux",
+       "react-dom": "ReactDOM",
+-      "react-redux": "ReactRedux"
+     };
+   }
+ 
+diff -ur sources/forms/package.json sources/forms-rher/package.json
+--- sources/forms/package.json	2019-03-03 12:27:19.000000000 +0900
++++ sources/forms-rher/package.json	2019-03-27 21:28:40.000000000 +0900
+@@ -10,7 +10,7 @@
+     "fps-emit": "file:../../fps-emit",
+     "react": "^16.8.2",
+     "react-dom": "^16.8.2",
+-    "react-redux": "^6.0.0",
++    "react-hooks-easy-redux": "1.6.0",
+     "react-scripts": "2.1.5",
+     "redux": "^4.0.0",
+     "redux-starter-kit": "^0.4.3",
+diff -ur sources/forms/public/index.html sources/forms-rher/public/index.html
+--- sources/forms/public/index.html	2019-03-03 12:27:19.000000000 +0900
++++ sources/forms-rher/public/index.html	2019-03-27 21:28:40.000000000 +0900
+@@ -43,6 +43,5 @@
+     <script type="text/javascript" src="redux.min.js"></script>
+     <script type="text/javascript" src="react.production.min.js"></script>
+     <script type="text/javascript" src="react-dom.production.min.js"></script>
+-    <script type="text/javascript" src="react-redux.min.js"></script>
+   </body>
+ </html>
+diff -ur sources/forms/src/App.js sources/forms-rher/src/App.js
+--- sources/forms/src/App.js	2019-03-03 12:27:19.000000000 +0900
++++ sources/forms-rher/src/App.js	2019-03-27 21:28:40.000000000 +0900
+@@ -1,5 +1,5 @@
+ import React from "react";
+-import { connect } from "react-redux";
++import { useReduxState } from "react-hooks-easy-redux";
+ 
+ import Form from "./Form";
+ import * as c from "./constants";
+@@ -25,24 +25,24 @@
+   }
+ }
+ 
+-class App extends React.Component {
+-  render() {
+-    return (
+-      <div>
+-        <button onClick={infiniteBobRoss}>Type Text</button>
+-        <div className="row">
+-          {this.props.slices.map((slice, idx) => {
+-            return (
+-              <div style={{ display: "inline-block", minWidth: 70 }} key={idx}>
+-                <Form id={slice} />
+-              </div>
+-            );
+-          })}
+-        </div>
++const App = () => {
++  const state = useReduxState();
++  const { slice } = mapState(state);
++  return (
++    <div>
++      <button onClick={infiniteBobRoss}>Type Text</button>
++      <div className="row">
++        {slices.map((slice, idx) => {
++          return (
++            <div style={{ display: "inline-block", minWidth: 70 }} key={idx}>
++              <Form id={slice} />
++            </div>
++          );
++        })}
+       </div>
+-    );
+-  }
+-}
++    </div>
++  );
++};
+ App.displayName = "App";
+ 
+-export default connect(mapState)(App);
++export default App;
+diff -ur sources/forms/src/Form.jsx sources/forms-rher/src/Form.jsx
+--- sources/forms/src/Form.jsx	2019-03-03 12:27:19.000000000 +0900
++++ sources/forms-rher/src/Form.jsx	2019-03-27 21:28:40.000000000 +0900
+@@ -1,43 +1,32 @@
+ import React from "react";
+-import { connect } from "react-redux";
++import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
+ 
+ import { updateInput } from "./inputs";
+ 
+ import * as c from "./constants";
+ 
+-const mapState = (state, ownProps) => {
+-  return {
+-    text: state[ownProps.id]
+-  };
+-};
++const Form = ({ id }) => {
++  const state = useReduxState();
++  const dispatch = useReduxDispatch();
++  const text = state[id];
+ 
+-const mapDispatch = { updateInput };
+-
+-class Form extends React.Component {
+-  onChange = e => {
+-    this.props.updateInput({ inputId: this.props.id, text: e.target.value });
++  const onChange = e => {
++    dispatch(updateInput({ inputId: id, text: e.target.value }));
+   };
+ 
+-  render() {
+-    const { text, id } = this.props;
++  const fillers = Array.from({
++    length: c.NUMBER_OF_CHECKBOXES_PER_FORM
++  }).map((item, i) => <input type="checkbox" key={i} />);
++
++  return (
++    <React.Fragment>
++      <form style={{ display: "flex", alignItems: "flex-start" }}>
++        Form {id}:
++        <textarea id={`input-${id}`} value={text} onChange={onChange} />
++      </form>
++      <div>{fillers}</div>
++    </React.Fragment>
++  );
++};
+ 
+-    const fillers = Array.from({
+-      length: c.NUMBER_OF_CHECKBOXES_PER_FORM
+-    }).map((item, i) => <input type="checkbox" key={i} />);
+-
+-    return (
+-      <React.Fragment>
+-        <form style={{ display: "flex", alignItems: "flex-start" }}>
+-          Form {id}:
+-          <textarea id={`input-${id}`} value={text} onChange={this.onChange} />
+-        </form>
+-        <div>{fillers}</div>
+-      </React.Fragment>
+-    );
+-  }
+-}
+-
+-export default connect(
+-  mapState,
+-  mapDispatch
+-)(Form);
++export default Form;
+diff -ur sources/forms/src/index.js sources/forms-rher/src/index.js
+--- sources/forms/src/index.js	2019-03-03 12:27:19.000000000 +0900
++++ sources/forms-rher/src/index.js	2019-03-27 21:28:40.000000000 +0900
+@@ -1,6 +1,6 @@
+ import React, { unstable_Profiler as Profiler } from "react";
+ import ReactDOM from "react-dom";
+-import { Provider } from "react-redux";
++import { ReduxProvider as Provider } from "react-hooks-easy-redux";
+ import "./index.css";
+ import App from "./App";
+ import "fps-emit";

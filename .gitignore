@@ -68,3 +68,14 @@ dist/
 lib/
 es/
 build/
+
+sources/tree-view-rher
+sources/tree-view-rher-simple
+sources/tree-view-dumb
+sources/tree-view-memo
+sources/tree-view-rrh
+sources/deeptree-rher
+sources/twitter-lite-rher
+sources/stockticker-rher
+sources/forms-rher
+sources/deeptree-nested-rher

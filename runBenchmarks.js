@@ -87,6 +87,12 @@ function printBenchmarkResults(benchmark, versionPerfEntries) {
       ]);
     });
 
+  // remove 'Version' field
+  table.options.head.shift();
+  table.forEach(item => {
+    item.shift();
+  });
+
   console.log(table.toString());
 }
 
@@ -156,7 +162,7 @@ async function runBenchmarks() {
     for (let i = 0; i < reduxVersions.length; i++) {
       const version = reduxVersions[i];
       const toRun = join(source, version);
-      console.log(`  react-redux version: ${version}`);
+      // console.log(`  react-redux version: ${version}`);
       const browser = await puppeteer.launch({
         //headless: false
       });

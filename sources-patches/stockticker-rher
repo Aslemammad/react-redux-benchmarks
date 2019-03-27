@@ -1,0 +1,239 @@
+diff -ur sources/stockticker/config-overrides.js sources/stockticker-rher/config-overrides.js
+--- sources/stockticker/config-overrides.js	2019-02-20 15:27:17.000000000 +0900
++++ sources/stockticker-rher/config-overrides.js	2019-03-27 21:28:40.000000000 +0900
+@@ -7,10 +7,9 @@
+             "react" : "React",
+             "redux" : "Redux",
+             "react-dom" : "ReactDOM",
+-            "react-redux" : "ReactRedux",
+         }
+     }
+ 
+ 
+     return config;
+-}
+\ No newline at end of file
++}
+diff -ur sources/stockticker/package.json sources/stockticker-rher/package.json
+--- sources/stockticker/package.json	2019-02-20 15:27:17.000000000 +0900
++++ sources/stockticker-rher/package.json	2019-03-27 21:28:40.000000000 +0900
+@@ -7,7 +7,7 @@
+     "fps-emit": "file:../../fps-emit",
+     "react": "^16.6.0",
+     "react-dom": "^16.6.0",
+-    "react-redux": "^5.1.0",
++    "react-hooks-easy-redux": "1.6.0",
+     "react-scripts": "2.0.3",
+     "redux": "^4.0.0",
+     "reselect": "^3.0.1"
+diff -ur sources/stockticker/public/index.html sources/stockticker-rher/public/index.html
+--- sources/stockticker/public/index.html	2019-03-26 21:38:16.000000000 +0900
++++ sources/stockticker-rher/public/index.html	2019-03-27 21:28:40.000000000 +0900
+@@ -44,6 +44,5 @@
+     <script type="text/javascript" src="redux.min.js"></script>
+     <script type="text/javascript" src="react.production.min.js"></script>
+     <script type="text/javascript" src="react-dom.production.min.js"></script>
+-    <script type="text/javascript" src="react-redux.min.js"></script>
+   </body>
+ </html>
+diff -ur sources/stockticker/src/App.js sources/stockticker-rher/src/App.js
+--- sources/stockticker/src/App.js	2019-03-03 12:27:19.000000000 +0900
++++ sources/stockticker-rher/src/App.js	2019-03-27 21:28:40.000000000 +0900
+@@ -1,5 +1,5 @@
+ import React from "react";
+-import { connect } from "react-redux";
++import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
+ 
+ import Slice from "./Slice";
+ import { updateRandomPairInSlice } from "./pairActions";
+@@ -14,31 +14,27 @@
+   return { slices };
+ };
+ 
+-const mapDispatch = { updateRandomPairInSlice };
+-
+-class App extends React.Component {
+-  render() {
+-    return (
+-      <div>
+-        <button onClick={this.props.updateRandomPairInSlice}>
+-          Update Random Pair
+-        </button>
+-        <div className="row">
+-          {this.props.slices.map((slice, idx) => {
+-            return (
+-              <div className="col-lg-4" key={idx}>
+-                <Slice idx={idx} />
+-              </div>
+-            );
+-          })}
+-        </div>
++const App = () => {
++  const state = useReduxState();
++  const dispatch = useReduxDispatch();
++  const { slices } = mapState(state);
++  return (
++    <div>
++      <button onClick={() => dispatch(updateRandomPairInSlice())}>
++        Update Random Pair
++      </button>
++      <div className="row">
++        {slices.map((slice, idx) => {
++          return (
++            <div className="col-lg-4" key={idx}>
++              <Slice idx={idx} />
++            </div>
++          );
++        })}
+       </div>
+-    );
+-  }
++    </div>
++  );
+ }
+ App.displayName = "App";
+ 
+-export default connect(
+-  mapState,
+-  mapDispatch
+-)(App);
++export default App;
+diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-rher/src/Pair.jsx
+--- sources/stockticker/src/Pair.jsx	2019-03-03 12:27:19.000000000 +0900
++++ sources/stockticker-rher/src/Pair.jsx	2019-03-27 21:28:40.000000000 +0900
+@@ -1,35 +1,20 @@
+-import React from "react";
+-import { connect } from "react-redux";
++import React, { useEffect, useMemo, useRef } from "react";
++import { useReduxState } from "react-hooks-easy-redux";
+ 
+-const mapState = (state, props) => state[props.sliceId][props.pairId];
++const Pair = props => {
++  const state = useReduxState();
++  const { value, name } = state[props.sliceId][props.pairId];
++  const prevValue = useRef(null);
++  useEffect(() => {
++    prevValue.current = value;
++  });
+ 
+-class Pair extends React.Component {
+-  state = {
+-    direction: "up",
+-    value: this.props.value
+-  };
++  const direction = value > prevValue.current ? "up" : "down";
+ 
+-  static getDerivedStateFromProps(props, state) {
+-    if (props.value === state.value) return null;
+-
+-    const direction = props.value > state.value ? "up" : "down";
+-
+-    return {
+-      value: props.value,
+-      direction
+-    };
+-  }
+-
+-  shouldComponentUpdate(nextProps) {
+-    return this.props.value !== nextProps.value;
+-  }
+-
+-  render() {
+-    const { direction } = this.state;
+-
+-    return (
++  return useMemo(
++    () => (
+       <li className="list-group-item">
+-        <span>{this.props.name}</span>
++        <span>{name}</span>
+         <span
+           className={
+             "pull-right " +
+@@ -44,12 +29,13 @@
+                 : "glyphicon-arrow-down")
+             }
+           />
+-          <span>{this.props.value}</span>
++          <span>{value}</span>
+         </span>
+       </li>
+-    );
+-  }
+-}
++    ),
++    [value]
++  );
++};
+ Pair.displayName = "Pair";
+ 
+-export default connect(mapState)(Pair);
++export default Pair;
+diff -ur sources/stockticker/src/Slice.jsx sources/stockticker-rher/src/Slice.jsx
+--- sources/stockticker/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
++++ sources/stockticker-rher/src/Slice.jsx	2019-03-27 21:28:40.000000000 +0900
+@@ -1,38 +1,21 @@
+-import React, { Component } from "react";
+-import { connect } from "react-redux";
++import React from "react";
++import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
+ 
+ import Pair from "./Pair";
+ import { fillPairs } from "./pairActions";
+ 
+-const actions = { fillPairs };
+-
+-const mapStateToProps = (state, props) => {
+-  return {
+-    slice: state[props.idx]
+-  };
++const Slice = ({ idx }) => {
++  const state = useReduxState();
++  const dispatch = useReduxDispatch();
++  const slice = state[idx];
++  return (
++    <ul className="list-group">
++      {slice.map(pair => {
++        return <Pair key={pair.id} sliceId={idx} pairId={pair.id} />;
++      })}
++    </ul>
++  );
+ };
+-
+-class Slice extends Component {
+-  state = {};
+-
+-  componentDidMount = () => {
+-    //this.props.fillPairs(this.props.idx);
+-  };
+-
+-  render() {
+-    const { slice, idx } = this.props;
+-    return (
+-      <ul className="list-group">
+-        {slice.map(pair => {
+-          return <Pair key={pair.id} sliceId={idx} pairId={pair.id} />;
+-        })}
+-      </ul>
+-    );
+-  }
+-}
+ Slice.displayName = "Slice";
+ 
+-export default connect(
+-  mapStateToProps,
+-  actions
+-)(Slice);
++export default Slice;
+diff -ur sources/stockticker/src/index.js sources/stockticker-rher/src/index.js
+--- sources/stockticker/src/index.js	2019-03-27 20:38:57.000000000 +0900
++++ sources/stockticker-rher/src/index.js	2019-03-27 21:28:40.000000000 +0900
+@@ -7,7 +7,7 @@
+ import * as c from "./constants";
+ import { updatePair, updateRandomPairInSlice, fillPairs } from "./pairActions";
+ 
+-import { Provider } from "react-redux";
++import { ReduxProvider as Provider } from "react-hooks-easy-redux";
+ 
+ import configureStore from "./configureStore";
+ 

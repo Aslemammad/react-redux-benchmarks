@@ -4,10 +4,11 @@
   "description": "benchmark suite and runner for react-redux",
   "main": "index.js",
   "scripts": {
+    "postinstall": "./sources-patches/create-variants.sh",
     "initialize": "node ./setupRuns.js",
     "start": "node ./runBenchmarks.js",
     "test": "jest",
-    "format" : "prettier --write \"sources/**/src/*.{js,jsx}\" *.js"
+    "format": "prettier --write \"sources/**/src/*.{js,jsx}\" *.js"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "tracealyzer": "^0.9.3"
   },
   "devDependencies": {
-    "prettier": "^1.16.4"
+    "prettier": "^1.16.4",
+    "yarn": "^1.13.0"
   }
 }
