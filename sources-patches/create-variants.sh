@@ -49,3 +49,8 @@ if [ ! -e sources/deeptree-nested-rher ]; then
 	cp -r sources/deeptree-nested sources/deeptree-nested-rher
 	patch -d sources/deeptree-nested-rher -p2 < sources-patches/deeptree-nested-rher
 fi
+
+if [ ! -e sources/deeptree-nested-rrh ]; then
+	cp -r sources/deeptree-nested sources/deeptree-nested-rrh
+	patch -d sources/deeptree-nested-rrh -p2 < sources-patches/deeptree-nested-rrh
+fi
