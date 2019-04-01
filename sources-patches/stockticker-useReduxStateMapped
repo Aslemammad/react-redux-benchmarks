@@ -165,7 +165,7 @@ diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-useReduxStateMappe
 -}
 +  useEffect(() => {
 +    prevValue.current = value;
-+  });
++  }, [value]);
 +
 +  return (
 +		<li className="list-group-item">
