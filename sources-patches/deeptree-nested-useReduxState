@@ -1,6 +1,6 @@
-diff -ur sources/deeptree-nested/config-overrides.js sources/deeptree-nested-rher/config-overrides.js
+diff -ur sources/deeptree-nested/config-overrides.js sources/deeptree-nested-useReduxState/config-overrides.js
 --- sources/deeptree-nested/config-overrides.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/deeptree-nested-rher/config-overrides.js	2019-03-27 21:50:16.000000000 +0900
++++ sources/deeptree-nested-useReduxState/config-overrides.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,7 +7,6 @@
        react: "React",
        redux: "Redux",
@@ -9,21 +9,21 @@ diff -ur sources/deeptree-nested/config-overrides.js sources/deeptree-nested-rhe
      };
    }
  
-diff -ur sources/deeptree-nested/package.json sources/deeptree-nested-rher/package.json
+diff -ur sources/deeptree-nested/package.json sources/deeptree-nested-useReduxState/package.json
 --- sources/deeptree-nested/package.json	2019-03-27 20:38:57.000000000 +0900
-+++ sources/deeptree-nested-rher/package.json	2019-03-27 21:50:16.000000000 +0900
++++ sources/deeptree-nested-useReduxState/package.json	2019-04-01 23:36:28.000000000 +0900
 @@ -7,7 +7,7 @@
      "fps-emit": "file:../../fps-emit",
      "react": "^16.6.0",
      "react-dom": "^16.6.0",
 -    "react-redux": "^5.1.0",
-+    "react-hooks-easy-redux": "1.6.0",
++    "reactive-react-redux": "^1.7.0",
      "react-scripts": "2.0.3",
      "redux": "^4.0.0",
      "redux-starter-kit": "^0.4.3",
-diff -ur sources/deeptree-nested/public/index.html sources/deeptree-nested-rher/public/index.html
+diff -ur sources/deeptree-nested/public/index.html sources/deeptree-nested-useReduxState/public/index.html
 --- sources/deeptree-nested/public/index.html	2019-03-27 20:38:57.000000000 +0900
-+++ sources/deeptree-nested-rher/public/index.html	2019-03-27 21:50:16.000000000 +0900
++++ sources/deeptree-nested-useReduxState/public/index.html	2019-04-01 23:28:12.000000000 +0900
 @@ -44,6 +44,5 @@
      <script type="text/javascript" src="redux.min.js"></script>
      <script type="text/javascript" src="react.production.min.js"></script>
@@ -31,13 +31,13 @@ diff -ur sources/deeptree-nested/public/index.html sources/deeptree-nested-rher/
 -    <script type="text/javascript" src="react-redux.min.js"></script>
    </body>
  </html>
-diff -ur sources/deeptree-nested/src/App.js sources/deeptree-nested-rher/src/App.js
+diff -ur sources/deeptree-nested/src/App.js sources/deeptree-nested-useReduxState/src/App.js
 --- sources/deeptree-nested/src/App.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/deeptree-nested-rher/src/App.js	2019-03-27 21:50:16.000000000 +0900
++++ sources/deeptree-nested-useReduxState/src/App.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,5 +1,5 @@
  import React from "react";
 -import { connect } from "react-redux";
-+import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
++import { useReduxState, useReduxDispatch } from "reactive-react-redux";
  
  import Slice from "./Slice";
  import * as c from "./constants";
@@ -145,14 +145,14 @@ diff -ur sources/deeptree-nested/src/App.js sources/deeptree-nested-rher/src/App
 -  mapDispatch
 -)(App);
 +export default App;
-diff -ur sources/deeptree-nested/src/Slice.jsx sources/deeptree-nested-rher/src/Slice.jsx
+diff -ur sources/deeptree-nested/src/Slice.jsx sources/deeptree-nested-useReduxState/src/Slice.jsx
 --- sources/deeptree-nested/src/Slice.jsx	2019-03-27 20:38:57.000000000 +0900
-+++ sources/deeptree-nested-rher/src/Slice.jsx	2019-03-27 21:53:55.000000000 +0900
++++ sources/deeptree-nested-useReduxState/src/Slice.jsx	2019-04-01 23:36:28.000000000 +0900
 @@ -1,94 +1,62 @@
 -import React, { Component } from "react";
 -import { connect } from "react-redux";
 +import React, { useEffect } from "react";
-+import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
++import { useReduxState, useReduxDispatch } from "reactive-react-redux";
  
  import { initialize, createStringId } from "./strings";
  import { TEXT_INPUT_MOD } from "./constants";
@@ -282,15 +282,15 @@ diff -ur sources/deeptree-nested/src/Slice.jsx sources/deeptree-nested-rher/src/
  Slice.displayName = "Slice";
  
  export default Slice;
-diff -ur sources/deeptree-nested/src/index.js sources/deeptree-nested-rher/src/index.js
+diff -ur sources/deeptree-nested/src/index.js sources/deeptree-nested-useReduxState/src/index.js
 --- sources/deeptree-nested/src/index.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/deeptree-nested-rher/src/index.js	2019-03-27 21:50:16.000000000 +0900
++++ sources/deeptree-nested-useReduxState/src/index.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,7 +7,7 @@
  import * as c from "./constants";
  import { initialize, incrementRandomCounter, incrementMany } from "./counters";
  
 -import { Provider } from "react-redux";
-+import { ReduxProvider as Provider } from "react-hooks-easy-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
  
  import configureStore from "./configureStore";
  

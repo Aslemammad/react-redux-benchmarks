@@ -69,14 +69,14 @@ lib/
 es/
 build/
 
-sources/tree-view-rher
-sources/tree-view-rher-simple
+sources/tree-view-useReduxState
+sources/tree-view-useReduxStateSimple
 sources/tree-view-dumb
 sources/tree-view-memo
 sources/tree-view-rrh
-sources/deeptree-rher
-sources/twitter-lite-rher
-sources/stockticker-rher
-sources/forms-rher
-sources/deeptree-nested-rher
+sources/deeptree-useReduxState
+sources/twitter-lite-useReduxState
+sources/stockticker-useReduxState
+sources/forms-useReduxState
+sources/deeptree-nested-useReduxState
 sources/deeptree-nested-rrh

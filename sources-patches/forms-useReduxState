@@ -1,6 +1,6 @@
-diff -ur sources/forms/config-overrides.js sources/forms-rher/config-overrides.js
+diff -ur sources/forms/config-overrides.js sources/forms-useReduxState/config-overrides.js
 --- sources/forms/config-overrides.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/forms-rher/config-overrides.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/forms-useReduxState/config-overrides.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,7 +7,6 @@
        react: "React",
        redux: "Redux",
@@ -9,21 +9,21 @@ diff -ur sources/forms/config-overrides.js sources/forms-rher/config-overrides.j
      };
    }
  
-diff -ur sources/forms/package.json sources/forms-rher/package.json
+diff -ur sources/forms/package.json sources/forms-useReduxState/package.json
 --- sources/forms/package.json	2019-03-03 12:27:19.000000000 +0900
-+++ sources/forms-rher/package.json	2019-03-27 21:28:40.000000000 +0900
++++ sources/forms-useReduxState/package.json	2019-04-01 23:36:28.000000000 +0900
 @@ -10,7 +10,7 @@
      "fps-emit": "file:../../fps-emit",
      "react": "^16.8.2",
      "react-dom": "^16.8.2",
 -    "react-redux": "^6.0.0",
-+    "react-hooks-easy-redux": "1.6.0",
++    "reactive-react-redux": "^1.7.0",
      "react-scripts": "2.1.5",
      "redux": "^4.0.0",
      "redux-starter-kit": "^0.4.3",
-diff -ur sources/forms/public/index.html sources/forms-rher/public/index.html
+diff -ur sources/forms/public/index.html sources/forms-useReduxState/public/index.html
 --- sources/forms/public/index.html	2019-03-03 12:27:19.000000000 +0900
-+++ sources/forms-rher/public/index.html	2019-03-27 21:28:40.000000000 +0900
++++ sources/forms-useReduxState/public/index.html	2019-04-01 23:28:10.000000000 +0900
 @@ -43,6 +43,5 @@
      <script type="text/javascript" src="redux.min.js"></script>
      <script type="text/javascript" src="react.production.min.js"></script>
@@ -31,13 +31,13 @@ diff -ur sources/forms/public/index.html sources/forms-rher/public/index.html
 -    <script type="text/javascript" src="react-redux.min.js"></script>
    </body>
  </html>
-diff -ur sources/forms/src/App.js sources/forms-rher/src/App.js
+diff -ur sources/forms/src/App.js sources/forms-useReduxState/src/App.js
 --- sources/forms/src/App.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/forms-rher/src/App.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/forms-useReduxState/src/App.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,5 +1,5 @@
  import React from "react";
 -import { connect } from "react-redux";
-+import { useReduxState } from "react-hooks-easy-redux";
++import { useReduxState } from "reactive-react-redux";
  
  import Form from "./Form";
  import * as c from "./constants";
@@ -84,13 +84,13 @@ diff -ur sources/forms/src/App.js sources/forms-rher/src/App.js
  
 -export default connect(mapState)(App);
 +export default App;
-diff -ur sources/forms/src/Form.jsx sources/forms-rher/src/Form.jsx
+diff -ur sources/forms/src/Form.jsx sources/forms-useReduxState/src/Form.jsx
 --- sources/forms/src/Form.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/forms-rher/src/Form.jsx	2019-03-27 21:28:40.000000000 +0900
++++ sources/forms-useReduxState/src/Form.jsx	2019-04-01 23:36:28.000000000 +0900
 @@ -1,43 +1,32 @@
  import React from "react";
 -import { connect } from "react-redux";
-+import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
++import { useReduxState, useReduxDispatch } from "reactive-react-redux";
  
  import { updateInput } from "./inputs";
  
@@ -153,14 +153,14 @@ diff -ur sources/forms/src/Form.jsx sources/forms-rher/src/Form.jsx
 -  mapDispatch
 -)(Form);
 +export default Form;
-diff -ur sources/forms/src/index.js sources/forms-rher/src/index.js
+diff -ur sources/forms/src/index.js sources/forms-useReduxState/src/index.js
 --- sources/forms/src/index.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/forms-rher/src/index.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/forms-useReduxState/src/index.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,6 +1,6 @@
  import React, { unstable_Profiler as Profiler } from "react";
  import ReactDOM from "react-dom";
 -import { Provider } from "react-redux";
-+import { ReduxProvider as Provider } from "react-hooks-easy-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
  import "./index.css";
  import App from "./App";
  import "fps-emit";

@@ -1,6 +1,6 @@
-diff -ur sources/deeptree/config-overrides.js sources/deeptree-rher/config-overrides.js
+diff -ur sources/deeptree/config-overrides.js sources/deeptree-useReduxState/config-overrides.js
 --- sources/deeptree/config-overrides.js	2019-02-20 06:30:32.000000000 +0900
-+++ sources/deeptree-rher/config-overrides.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/deeptree-useReduxState/config-overrides.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,10 +7,9 @@
              "react" : "React",
              "redux" : "Redux",
@@ -14,25 +14,21 @@ diff -ur sources/deeptree/config-overrides.js sources/deeptree-rher/config-overr
 -}
 \ No newline at end of file
 +}
-diff -ur sources/deeptree/package.json sources/deeptree-rher/package.json
+diff -ur sources/deeptree/package.json sources/deeptree-useReduxState/package.json
 --- sources/deeptree/package.json	2019-02-20 06:30:32.000000000 +0900
-+++ sources/deeptree-rher/package.json	2019-03-27 21:28:40.000000000 +0900
-@@ -5,9 +5,9 @@
-   "dependencies": {
-     "chance": "^1.0.16",
++++ sources/deeptree-useReduxState/package.json	2019-04-01 23:36:28.000000000 +0900
+@@ -7,7 +7,7 @@
      "fps-emit": "file:../../fps-emit",
--    "react": "^16.6.0",
--    "react-dom": "^16.6.0",
+     "react": "^16.6.0",
+     "react-dom": "^16.6.0",
 -    "react-redux": "^5.1.0",
-+    "react": "^16.8.2",
-+    "react-dom": "^16.8.2",
-+    "react-hooks-easy-redux": "1.6.0",
++    "reactive-react-redux": "^1.7.0",
      "react-scripts": "2.0.3",
      "redux": "^4.0.0",
      "redux-starter-kit": "^0.4.3",
-diff -ur sources/deeptree/public/index.html sources/deeptree-rher/public/index.html
+diff -ur sources/deeptree/public/index.html sources/deeptree-useReduxState/public/index.html
 --- sources/deeptree/public/index.html	2019-02-20 06:30:32.000000000 +0900
-+++ sources/deeptree-rher/public/index.html	2019-03-27 21:28:40.000000000 +0900
++++ sources/deeptree-useReduxState/public/index.html	2019-04-01 23:28:05.000000000 +0900
 @@ -44,6 +44,5 @@
      <script type="text/javascript" src="redux.min.js"></script>
      <script type="text/javascript" src="react.production.min.js"></script>
@@ -40,13 +36,13 @@ diff -ur sources/deeptree/public/index.html sources/deeptree-rher/public/index.h
 -    <script type="text/javascript" src="react-redux.min.js"></script>
    </body>
  </html>
-diff -ur sources/deeptree/src/App.js sources/deeptree-rher/src/App.js
+diff -ur sources/deeptree/src/App.js sources/deeptree-useReduxState/src/App.js
 --- sources/deeptree/src/App.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/deeptree-rher/src/App.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/deeptree-useReduxState/src/App.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,5 +1,5 @@
  import React from "react";
 -import { connect } from "react-redux";
-+import { useReduxDispatch, useReduxState } from "react-hooks-easy-redux";
++import { useReduxDispatch, useReduxState } from "reactive-react-redux";
  
  import Slice from "./Slice";
  import * as c from "./constants";
@@ -103,14 +99,14 @@ diff -ur sources/deeptree/src/App.js sources/deeptree-rher/src/App.js
 -  mapDispatch
 -)(App);
 +export default App;
-diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-rher/src/Slice.jsx
+diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-useReduxState/src/Slice.jsx
 --- sources/deeptree/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/deeptree-rher/src/Slice.jsx	2019-03-27 21:28:40.000000000 +0900
++++ sources/deeptree-useReduxState/src/Slice.jsx	2019-04-01 23:36:28.000000000 +0900
 @@ -1,43 +1,28 @@
 -import React, { Component } from "react";
 -import { connect } from "react-redux";
 +import React from "react";
-+import { useReduxState } from "react-hooks-easy-redux";
++import { useReduxState } from "reactive-react-redux";
  
 -const mapStateToProps = (state, props) => {
 -  return {
@@ -167,15 +163,15 @@ diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-rher/src/Slice.jsx
  
  export default Slice;
 -//export default connect(mapStateToProps, actions)(Slice);
-diff -ur sources/deeptree/src/index.js sources/deeptree-rher/src/index.js
+diff -ur sources/deeptree/src/index.js sources/deeptree-useReduxState/src/index.js
 --- sources/deeptree/src/index.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/deeptree-rher/src/index.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/deeptree-useReduxState/src/index.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,7 +7,7 @@
  import * as c from "./constants";
  import { initialize, incrementRandomCounter, incrementMany } from "./counters";
  
 -import { Provider } from "react-redux";
-+import { ReduxProvider as Provider } from "react-hooks-easy-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
  
  import configureStore from "./configureStore";
  

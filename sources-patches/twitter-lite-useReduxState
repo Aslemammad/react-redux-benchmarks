@@ -1,6 +1,6 @@
-diff -ur sources/twitter-lite/config-overrides.js sources/twitter-lite-rher/config-overrides.js
+diff -ur sources/twitter-lite/config-overrides.js sources/twitter-lite-useReduxState/config-overrides.js
 --- sources/twitter-lite/config-overrides.js	2019-02-20 15:27:17.000000000 +0900
-+++ sources/twitter-lite-rher/config-overrides.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/twitter-lite-useReduxState/config-overrides.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,10 +7,9 @@
              "react" : "React",
              "redux" : "Redux",
@@ -14,21 +14,21 @@ diff -ur sources/twitter-lite/config-overrides.js sources/twitter-lite-rher/conf
 -}
 \ No newline at end of file
 +}
-diff -ur sources/twitter-lite/package.json sources/twitter-lite-rher/package.json
+diff -ur sources/twitter-lite/package.json sources/twitter-lite-useReduxState/package.json
 --- sources/twitter-lite/package.json	2019-02-20 15:27:17.000000000 +0900
-+++ sources/twitter-lite-rher/package.json	2019-03-27 21:28:40.000000000 +0900
++++ sources/twitter-lite-useReduxState/package.json	2019-04-01 23:36:28.000000000 +0900
 @@ -6,7 +6,7 @@
      "fps-emit": "file:../../fps-emit",
      "react": "^16.6.0",
      "react-dom": "^16.6.0",
 -    "react-redux": "^5.0.7",
-+    "react-hooks-easy-redux": "1.6.0",
++    "reactive-react-redux": "^1.7.0",
      "react-scripts": "2.0.3",
      "redux": "^4.0.0",
      "reselect": "^3.0.1"
-diff -ur sources/twitter-lite/public/index.html sources/twitter-lite-rher/public/index.html
+diff -ur sources/twitter-lite/public/index.html sources/twitter-lite-useReduxState/public/index.html
 --- sources/twitter-lite/public/index.html	2019-02-20 15:27:17.000000000 +0900
-+++ sources/twitter-lite-rher/public/index.html	2019-03-27 21:28:40.000000000 +0900
++++ sources/twitter-lite-useReduxState/public/index.html	2019-04-01 23:28:07.000000000 +0900
 @@ -24,7 +24,6 @@
      <script type="text/javascript" src="redux.min.js"></script>
      <script type="text/javascript" src="react.production.min.js"></script>
@@ -37,15 +37,15 @@ diff -ur sources/twitter-lite/public/index.html sources/twitter-lite-rher/public
    </head>
    <body>
      <noscript>
-diff -ur sources/twitter-lite/src/App.js sources/twitter-lite-rher/src/App.js
+diff -ur sources/twitter-lite/src/App.js sources/twitter-lite-useReduxState/src/App.js
 --- sources/twitter-lite/src/App.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/twitter-lite-rher/src/App.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/twitter-lite-useReduxState/src/App.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,26 +1,22 @@
 -import React, { Component } from "react";
 +import React from "react";
  import "./App.css";
 -import { connect } from "react-redux";
-+import { useReduxState } from "react-hooks-easy-redux";
++import { useReduxState } from "reactive-react-redux";
  import Slice from "./Slice";
  
 -const mapState = state => ({
@@ -85,14 +85,14 @@ diff -ur sources/twitter-lite/src/App.js sources/twitter-lite-rher/src/App.js
 -
 -export default connect(mapState)(App);
 +export default App;
-diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-rher/src/Slice.jsx
+diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-useReduxState/src/Slice.jsx
 --- sources/twitter-lite/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/twitter-lite-rher/src/Slice.jsx	2019-03-27 21:28:40.000000000 +0900
++++ sources/twitter-lite-useReduxState/src/Slice.jsx	2019-04-01 23:36:28.000000000 +0900
 @@ -1,31 +1,18 @@
 -import React, { Component } from "react";
 -import { connect } from "react-redux";
 +import React from "react";
-+import { useReduxState } from "react-hooks-easy-redux";
++import { useReduxState } from "reactive-react-redux";
  
  import TwitterLite from "./TwitterLite";
  
@@ -134,12 +134,12 @@ diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-rher/src/Slice.
 -
 -export default connect(mapStateToProps)(Slice);
 +export default Slice;
-diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-rher/src/TwitterLite.js
+diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-useReduxState/src/TwitterLite.js
 --- sources/twitter-lite/src/TwitterLite.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/twitter-lite-rher/src/TwitterLite.js	2019-03-27 21:31:25.000000000 +0900
++++ sources/twitter-lite-useReduxState/src/TwitterLite.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,6 +1,6 @@
 -import { connect } from "react-redux";
-+import { useReduxState, useReduxDispatch } from "react-hooks-easy-redux";
++import { useReduxState, useReduxDispatch } from "reactive-react-redux";
  import { createSelector } from "reselect";
 -import React, { Component } from "react";
 +import React from "react";
@@ -208,15 +208,15 @@ diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-rher/src/T
 +});
 +
 +export default ExampleContainer;
-diff -ur sources/twitter-lite/src/index.js sources/twitter-lite-rher/src/index.js
+diff -ur sources/twitter-lite/src/index.js sources/twitter-lite-useReduxState/src/index.js
 --- sources/twitter-lite/src/index.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/twitter-lite-rher/src/index.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/twitter-lite-useReduxState/src/index.js	2019-04-01 23:36:28.000000000 +0900
 @@ -3,7 +3,7 @@
  import "./index.css";
  import "fps-emit";
  import { createStore, combineReducers } from "redux";
 -import { Provider } from "react-redux";
-+import { ReduxProvider as Provider } from "react-hooks-easy-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
  import App from "./App";
  
  import { addTweet } from "./actions";

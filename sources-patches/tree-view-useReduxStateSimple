@@ -1,6 +1,6 @@
-diff -ur sources/tree-view/config-overrides.js sources/tree-view-rher/config-overrides.js
+diff -ur sources/tree-view/config-overrides.js sources/tree-view-useReduxStateSimple/config-overrides.js
 --- sources/tree-view/config-overrides.js	2019-03-25 21:14:50.000000000 +0900
-+++ sources/tree-view-rher/config-overrides.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/tree-view-useReduxStateSimple/config-overrides.js	2019-04-01 23:36:28.000000000 +0900
 @@ -7,10 +7,9 @@
              "react" : "React",
              "redux" : "Redux",
@@ -14,21 +14,21 @@ diff -ur sources/tree-view/config-overrides.js sources/tree-view-rher/config-ove
 -}
 \ No newline at end of file
 +}
-diff -ur sources/tree-view/package.json sources/tree-view-rher/package.json
+diff -ur sources/tree-view/package.json sources/tree-view-useReduxStateSimple/package.json
 --- sources/tree-view/package.json	2019-03-27 20:53:22.000000000 +0900
-+++ sources/tree-view-rher/package.json	2019-03-27 21:30:14.000000000 +0900
++++ sources/tree-view-useReduxStateSimple/package.json	2019-04-01 23:36:28.000000000 +0900
 @@ -11,7 +11,7 @@
      "fps-emit": "file:../../fps-emit",
      "react": "^16.6.0",
      "react-dom": "^16.6.0",
 -    "react-redux": "^5.0.7",
-+    "react-hooks-easy-redux": "1.6.0",
++    "reactive-react-redux": "^1.7.0",
      "redux": "^4.0",
      "schedule": "^0.3.0",
      "seedrandom": "^2.4.4"
-diff -ur sources/tree-view/public/index.html sources/tree-view-rher/public/index.html
+diff -ur sources/tree-view/public/index.html sources/tree-view-useReduxStateSimple/public/index.html
 --- sources/tree-view/public/index.html	2019-03-25 21:14:50.000000000 +0900
-+++ sources/tree-view-rher/public/index.html	2019-03-27 21:28:40.000000000 +0900
++++ sources/tree-view-useReduxStateSimple/public/index.html	2019-04-01 23:27:58.000000000 +0900
 @@ -20,6 +20,5 @@
      <script type="text/javascript" src="redux.min.js"></script>
      <script type="text/javascript" src="react.production.min.js"></script>
@@ -36,14 +36,24 @@ diff -ur sources/tree-view/public/index.html sources/tree-view-rher/public/index
 -    <script type="text/javascript" src="react-redux.min.js"></script>
    </body>
  </html>
-diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-rher/src/containers/Node.js
+diff -ur sources/tree-view/src/actions/index.js sources/tree-view-useReduxStateSimple/src/actions/index.js
+--- sources/tree-view/src/actions/index.js	2018-12-26 12:37:18.000000000 +0900
++++ sources/tree-view-useReduxStateSimple/src/actions/index.js	2019-04-01 23:36:28.000000000 +0900
+@@ -76,4 +76,4 @@
+       break;
+     }
+   }
+-}
+\ No newline at end of file
++}
+diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-useReduxStateSimple/src/containers/Node.js
 --- sources/tree-view/src/containers/Node.js	2019-03-25 21:14:50.000000000 +0900
-+++ sources/tree-view-rher/src/containers/Node.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/tree-view-useReduxStateSimple/src/containers/Node.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,73 +1,57 @@
  import React from 'react'
 -import { Component } from 'react'
 -import { connect } from 'react-redux'
-+import { useReduxDispatch, useReduxState } from 'react-hooks-easy-redux'
++import { useReduxDispatch, useReduxStateSimple } from 'reactive-react-redux'
  import * as actions from '../actions'
  
 -export class Node extends Component {
@@ -54,7 +64,7 @@ diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-rher/src/con
 -
 -  handleAddChildClick = e => {
 +const Node = ({ id, parentId }) => {
-+  const state = useReduxState();
++  const state = useReduxStateSimple();
 +  const dispatch = useReduxDispatch();
 +  const handleIncrementClick = () => {
 +    dispatch(actions.increment(id));
@@ -163,14 +173,14 @@ diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-rher/src/con
 -const ConnectedNode = connect(mapStateToProps, actions)(Node)
 -export default ConnectedNode
 +export default Node;
-diff -ur sources/tree-view/src/index.js sources/tree-view-rher/src/index.js
+diff -ur sources/tree-view/src/index.js sources/tree-view-useReduxStateSimple/src/index.js
 --- sources/tree-view/src/index.js	2019-03-25 21:14:50.000000000 +0900
-+++ sources/tree-view-rher/src/index.js	2019-03-27 21:28:40.000000000 +0900
++++ sources/tree-view-useReduxStateSimple/src/index.js	2019-04-01 23:36:28.000000000 +0900
 @@ -1,6 +1,6 @@
  import React, { unstable_Profiler as Profiler } from "react";
  import { render } from "react-dom";
 -import { Provider } from "react-redux";
-+import { ReduxProvider as Provider } from "react-hooks-easy-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
  import { configureStore } from "@acemarke/redux-starter-kit";
  import seedrandom from "seedrandom";
  import "fps-emit";
