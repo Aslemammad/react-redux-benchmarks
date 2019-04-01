@@ -2,12 +2,12 @@
 
 if [ ! -e sources/tree-view-useReduxState ]; then
 	cp -r sources/tree-view sources/tree-view-useReduxState
-	patch -d sources/tree-view-useReduxState -p2 < sources-patches/tree-view-rher
+	patch -d sources/tree-view-useReduxState -p2 < sources-patches/tree-view-useReduxState
 fi
 
 if [ ! -e sources/tree-view-useReduxStateSimple ]; then
 	cp -r sources/tree-view sources/tree-view-useReduxStateSimple
-	patch -d sources/tree-view-useReduxStateSimple -p2 < sources-patches/tree-view-rherSimple
+	patch -d sources/tree-view-useReduxStateSimple -p2 < sources-patches/tree-view-useReduxStateSimple
 fi
 
 if [ ! -e sources/tree-view-dumb ]; then
@@ -27,32 +27,32 @@ fi
 
 if [ ! -e sources/deeptree-useReduxState ]; then
 	cp -r sources/deeptree sources/deeptree-useReduxState
-	patch -d sources/deeptree-useReduxState -p2 < sources-patches/deeptree-rher
+	patch -d sources/deeptree-useReduxState -p2 < sources-patches/deeptree-useReduxState
 fi
 
 if [ ! -e sources/twitter-lite-useReduxState ]; then
 	cp -r sources/twitter-lite sources/twitter-lite-useReduxState
-	patch -d sources/twitter-lite-useReduxState -p2 < sources-patches/twitter-lite-rher
+	patch -d sources/twitter-lite-useReduxState -p2 < sources-patches/twitter-lite-useReduxState
 fi
 
 if [ ! -e sources/stockticker-useReduxState ]; then
 	cp -r sources/stockticker sources/stockticker-useReduxState
-	patch -d sources/stockticker-useReduxState -p2 < sources-patches/stockticker-rher
+	patch -d sources/stockticker-useReduxState -p2 < sources-patches/stockticker-useReduxState
 fi
 
 if [ ! -e sources/stockticker-useReduxStateMapped ]; then
 	cp -r sources/stockticker sources/stockticker-useReduxStateMapped
-	patch -d sources/stockticker-useReduxStateMapped -p2 < sources-patches/stockticker-rher
+	patch -d sources/stockticker-useReduxStateMapped -p2 < sources-patches/stockticker-useReduxStateMapped
 fi
 
 if [ ! -e sources/forms-useReduxState ]; then
 	cp -r sources/forms sources/forms-useReduxState
-	patch -d sources/forms-useReduxState -p2 < sources-patches/forms-rher
+	patch -d sources/forms-useReduxState -p2 < sources-patches/forms-useReduxState
 fi
 
 if [ ! -e sources/deeptree-nested-useReduxState ]; then
 	cp -r sources/deeptree-nested sources/deeptree-nested-useReduxState
-	patch -d sources/deeptree-nested-useReduxState -p2 < sources-patches/deeptree-nested-rher
+	patch -d sources/deeptree-nested-useReduxState -p2 < sources-patches/deeptree-nested-useReduxState
 fi
 
 if [ ! -e sources/deeptree-nested-rrh ]; then
