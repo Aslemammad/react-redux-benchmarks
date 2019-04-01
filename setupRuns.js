@@ -36,7 +36,11 @@ if (installTask.status > 0) {
 }
 
 const sources = readdirSync(join(__dirname, "sources"));
-sources.forEach(benchmark => {
+const benchmarksToSetup = process.env.BENCHMARKS
+  ? process.env.BENCHMARKS.split(":")
+  : sources;
+
+benchmarksToSetup.forEach(benchmark => {
   const src = join(__dirname, "sources", benchmark);
   let cwd;
   cwd = src;
