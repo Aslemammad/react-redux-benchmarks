@@ -1,6 +1,6 @@
 diff -ur sources/stockticker/config-overrides.js sources/stockticker-useReduxState/config-overrides.js
 --- sources/stockticker/config-overrides.js	2019-02-20 15:27:17.000000000 +0900
-+++ sources/stockticker-useReduxState/config-overrides.js	2019-04-01 23:36:28.000000000 +0900
++++ sources/stockticker-useReduxState/config-overrides.js	2019-04-02 12:06:56.000000000 +0900
 @@ -7,10 +7,9 @@
              "react" : "React",
              "redux" : "Redux",
@@ -16,7 +16,7 @@ diff -ur sources/stockticker/config-overrides.js sources/stockticker-useReduxSta
 +}
 diff -ur sources/stockticker/package.json sources/stockticker-useReduxState/package.json
 --- sources/stockticker/package.json	2019-02-20 15:27:17.000000000 +0900
-+++ sources/stockticker-useReduxState/package.json	2019-04-01 23:36:28.000000000 +0900
++++ sources/stockticker-useReduxState/package.json	2019-04-02 12:06:56.000000000 +0900
 @@ -7,7 +7,7 @@
      "fps-emit": "file:../../fps-emit",
      "react": "^16.6.0",
@@ -28,7 +28,7 @@ diff -ur sources/stockticker/package.json sources/stockticker-useReduxState/pack
      "reselect": "^3.0.1"
 diff -ur sources/stockticker/public/index.html sources/stockticker-useReduxState/public/index.html
 --- sources/stockticker/public/index.html	2019-03-26 21:38:16.000000000 +0900
-+++ sources/stockticker-useReduxState/public/index.html	2019-04-01 23:28:10.000000000 +0900
++++ sources/stockticker-useReduxState/public/index.html	2019-04-02 12:06:56.000000000 +0900
 @@ -44,6 +44,5 @@
      <script type="text/javascript" src="redux.min.js"></script>
      <script type="text/javascript" src="react.production.min.js"></script>
@@ -38,7 +38,7 @@ diff -ur sources/stockticker/public/index.html sources/stockticker-useReduxState
  </html>
 diff -ur sources/stockticker/src/App.js sources/stockticker-useReduxState/src/App.js
 --- sources/stockticker/src/App.js	2019-03-03 12:27:19.000000000 +0900
-+++ sources/stockticker-useReduxState/src/App.js	2019-04-01 23:36:28.000000000 +0900
++++ sources/stockticker-useReduxState/src/App.js	2019-04-02 12:06:56.000000000 +0900
 @@ -1,5 +1,5 @@
  import React from "react";
 -import { connect } from "react-redux";
@@ -100,29 +100,21 @@ diff -ur sources/stockticker/src/App.js sources/stockticker-useReduxState/src/Ap
 +export default App;
 diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-useReduxState/src/Pair.jsx
 --- sources/stockticker/src/Pair.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/stockticker-useReduxState/src/Pair.jsx	2019-04-01 23:36:28.000000000 +0900
-@@ -1,35 +1,20 @@
++++ sources/stockticker-useReduxState/src/Pair.jsx	2019-04-02 12:10:37.000000000 +0900
+@@ -1,55 +1,43 @@
 -import React from "react";
 -import { connect } from "react-redux";
 +import React, { useEffect, useMemo, useRef } from "react";
 +import { useReduxState } from "reactive-react-redux";
  
 -const mapState = (state, props) => state[props.sliceId][props.pairId];
-+const Pair = props => {
-+  const state = useReduxState();
-+  const { value, name } = state[props.sliceId][props.pairId];
-+  const prevValue = useRef(null);
-+  useEffect(() => {
-+    prevValue.current = value;
-+  }, [value]);
- 
+-
 -class Pair extends React.Component {
 -  state = {
 -    direction: "up",
 -    value: this.props.value
 -  };
-+  const direction = value > prevValue.current ? "up" : "down";
- 
+-
 -  static getDerivedStateFromProps(props, state) {
 -    if (props.value === state.value) return null;
 -
@@ -142,28 +134,61 @@ diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-useReduxState/src/
 -    const { direction } = this.state;
 -
 -    return (
-+  return useMemo(
-+    () => (
-       <li className="list-group-item">
+-      <li className="list-group-item">
 -        <span>{this.props.name}</span>
-+        <span>{name}</span>
++const RenderPair = React.memo(
++  ({ value, name, direction }) => (
++    <li className="list-group-item">
++      <span>{name}</span>
++      <span
++        className={
++          "pull-right " +
++          (direction === "up" ? "text-success" : "text-warning")
++        }
++      >
          <span
            className={
-             "pull-right " +
-@@ -44,12 +29,13 @@
-                 : "glyphicon-arrow-down")
-             }
-           />
+-            "pull-right " +
+-            (direction === "up" ? "text-success" : "text-warning")
++            "glyphicon " +
++            (direction === "up"
++              ? "glyphicon-arrow-up"
++              : "glyphicon-arrow-down")
+           }
+-        >
+-          <span
+-            className={
+-              "glyphicon " +
+-              (direction === "up"
+-                ? "glyphicon-arrow-up"
+-                : "glyphicon-arrow-down")
+-            }
+-          />
 -          <span>{this.props.value}</span>
-+          <span>{value}</span>
-         </span>
-       </li>
+-        </span>
+-      </li>
 -    );
 -  }
 -}
-+    ),
-+    [value]
-+  );
++        />
++        <span>{value}</span>
++      </span>
++    </li>
++  ),
++  (prevProps, nextProps) => prevProps.value === nextProps.value,
++);
++
++const Pair = props => {
++  const state = useReduxState();
++  const { value, name } = state[props.sliceId][props.pairId];
++  const prevValue = useRef(null);
++  useEffect(() => {
++    prevValue.current = value;
++  }, [value]);
++
++  const direction = value > prevValue.current ? "up" : "down";
++
++  return <RenderPair value={value} name={name} direction={direction} />;
 +};
  Pair.displayName = "Pair";
  
@@ -171,7 +196,7 @@ diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-useReduxState/src/
 +export default Pair;
 diff -ur sources/stockticker/src/Slice.jsx sources/stockticker-useReduxState/src/Slice.jsx
 --- sources/stockticker/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/stockticker-useReduxState/src/Slice.jsx	2019-04-01 23:36:28.000000000 +0900
++++ sources/stockticker-useReduxState/src/Slice.jsx	2019-04-02 12:06:56.000000000 +0900
 @@ -1,38 +1,21 @@
 -import React, { Component } from "react";
 -import { connect } from "react-redux";
@@ -227,7 +252,7 @@ diff -ur sources/stockticker/src/Slice.jsx sources/stockticker-useReduxState/src
 +export default Slice;
 diff -ur sources/stockticker/src/index.js sources/stockticker-useReduxState/src/index.js
 --- sources/stockticker/src/index.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/stockticker-useReduxState/src/index.js	2019-04-01 23:36:28.000000000 +0900
++++ sources/stockticker-useReduxState/src/index.js	2019-04-02 12:06:56.000000000 +0900
 @@ -7,7 +7,7 @@
  import * as c from "./constants";
  import { updatePair, updateRandomPairInSlice, fillPairs } from "./pairActions";
