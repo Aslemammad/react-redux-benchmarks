@@ -78,6 +78,7 @@ sources/deeptree-useReduxState
 sources/twitter-lite-useReduxState
 sources/stockticker-useReduxState
 sources/stockticker-useReduxStateMapped
+sources/stockticker-rrh
 sources/forms-useReduxState
 sources/deeptree-nested-useReduxState
 sources/deeptree-nested-rrh

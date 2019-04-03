@@ -45,6 +45,11 @@ if [ ! -e sources/stockticker-useReduxStateMapped ]; then
 	patch -d sources/stockticker-useReduxStateMapped -p2 < sources-patches/stockticker-useReduxStateMapped
 fi
 
+if [ ! -e sources/stockticker-rrh ]; then
+	cp -r sources/stockticker sources/stockticker-rrh
+	patch -d sources/stockticker-rrh -p2 < sources-patches/stockticker-rrh
+fi
+
 if [ ! -e sources/forms-useReduxState ]; then
 	cp -r sources/forms sources/forms-useReduxState
 	patch -d sources/forms-useReduxState -p2 < sources-patches/forms-useReduxState

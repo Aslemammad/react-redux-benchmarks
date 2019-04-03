@@ -104,7 +104,7 @@ diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-useReduxStateMappe
 @@ -1,55 +1,46 @@
 -import React from "react";
 -import { connect } from "react-redux";
-+import React, { useEffect, useMemo, useRef } from "react";
++import React, { useEffect, useRef } from "react";
 +import { useReduxStateMapped } from "reactive-react-redux";
  
 -const mapState = (state, props) => state[props.sliceId][props.pairId];
