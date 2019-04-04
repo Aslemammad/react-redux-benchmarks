@@ -40,9 +40,9 @@ if [ ! -e sources/stockticker-useReduxState ]; then
 	patch -d sources/stockticker-useReduxState -p2 < sources-patches/stockticker-useReduxState
 fi
 
-if [ ! -e sources/stockticker-useReduxStateMapped ]; then
-	cp -r sources/stockticker sources/stockticker-useReduxStateMapped
-	patch -d sources/stockticker-useReduxStateMapped -p2 < sources-patches/stockticker-useReduxStateMapped
+if [ ! -e sources/stockticker-useReduxSelectors ]; then
+	cp -r sources/stockticker sources/stockticker-useReduxSelectors
+	patch -d sources/stockticker-useReduxSelectors -p2 < sources-patches/stockticker-useReduxSelectors
 fi
 
 if [ ! -e sources/stockticker-rrh ]; then
