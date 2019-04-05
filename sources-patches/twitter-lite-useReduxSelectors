@@ -87,12 +87,12 @@ diff -ur sources/twitter-lite/src/App.js sources/twitter-lite-useReduxSelectors/
 +export default App;
 diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-useReduxSelectors/src/Slice.jsx
 --- sources/twitter-lite/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/twitter-lite-useReduxSelectors/src/Slice.jsx	2019-04-05 21:55:34.000000000 +0900
-@@ -1,31 +1,18 @@
++++ sources/twitter-lite-useReduxSelectors/src/Slice.jsx	2019-04-05 22:49:52.000000000 +0900
+@@ -1,31 +1,20 @@
 -import React, { Component } from "react";
 -import { connect } from "react-redux";
-+import React from "react";
-+import { useReduxState } from "reactive-react-redux";
++import React, { useCallback } from "react";
++import { useReduxSelectors } from "reactive-react-redux";
  
  import TwitterLite from "./TwitterLite";
  
@@ -102,8 +102,10 @@ diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-useReduxSelecto
 -  };
 -};
 +const Slice = React.memo(({ idx }) => {
-+  const state = useReduxState();
-+  const slice = state[idx];
++  const { result1 } = useReduxSelectors({
++    result1: useCallback(state => ({ slice: state[idx] }), [idx]),
++  });
++  const { slice } = result1;
 +  return (
 +    <ul className="list-group">
 +      {slice.map(tweet => {
@@ -136,7 +138,7 @@ diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-useReduxSelecto
 +export default Slice;
 diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-useReduxSelectors/src/TwitterLite.js
 --- sources/twitter-lite/src/TwitterLite.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/twitter-lite-useReduxSelectors/src/TwitterLite.js	2019-04-05 22:28:01.000000000 +0900
++++ sources/twitter-lite-useReduxSelectors/src/TwitterLite.js	2019-04-05 22:54:50.000000000 +0900
 @@ -1,45 +1,32 @@
 -import { connect } from "react-redux";
 -import { createSelector } from "reselect";
@@ -189,14 +191,14 @@ diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-useReduxSe
 +  return <div>barfoo</div>;
 +};
 +
-+const InternalContainer = (props) => {
++const InternalContainer = React.memo((props) => {
 +  const { result1 } = useReduxSelectors({
 +    result1: useCallback(state => ({ foo: "foobar" }), []),
 +  });
 +  const dispatch = useReduxDispatch();
 +  const actionFoobar = () => dispatch(foobar());
 +  return <Internal />;
-+};
++});
 +
 +const Example = () => {
 +  return <InternalContainer />;
