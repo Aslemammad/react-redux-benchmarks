@@ -35,14 +35,14 @@ if [ ! -e sources/twitter-lite-useReduxState ]; then
 	patch -d sources/twitter-lite-useReduxState -p2 < sources-patches/twitter-lite-useReduxState
 fi
 
+if [ ! -e sources/twitter-lite-useReduxSelectors ]; then
+	cp -r sources/twitter-lite sources/twitter-lite-useReduxSelectors
+	patch -d sources/twitter-lite-useReduxSelectors -p2 < sources-patches/twitter-lite-useReduxSelectors
+fi
+
 if [ ! -e sources/stockticker-useReduxState ]; then
 	cp -r sources/stockticker sources/stockticker-useReduxState
 	patch -d sources/stockticker-useReduxState -p2 < sources-patches/stockticker-useReduxState
-fi
-
-if [ ! -e sources/stockticker-useReduxSelectors ]; then
-	cp -r sources/stockticker sources/stockticker-useReduxSelectors
-	patch -d sources/stockticker-useReduxSelectors -p2 < sources-patches/stockticker-useReduxSelectors
 fi
 
 if [ ! -e sources/stockticker-rrh ]; then

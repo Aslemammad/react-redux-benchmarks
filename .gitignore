@@ -76,8 +76,8 @@ sources/tree-view-memo
 sources/tree-view-rrh
 sources/deeptree-useReduxState
 sources/twitter-lite-useReduxState
+sources/twitter-lite-useReduxSelectors
 sources/stockticker-useReduxState
-sources/stockticker-useReduxSelectors
 sources/stockticker-rrh
 sources/forms-useReduxState
 sources/deeptree-nested-useReduxState
