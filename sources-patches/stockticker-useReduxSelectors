@@ -100,18 +100,18 @@ diff -ur sources/stockticker/src/App.js sources/stockticker-useReduxSelectors/sr
 +export default App;
 diff -ur sources/stockticker/src/Pair.jsx sources/stockticker-useReduxSelectors/src/Pair.jsx
 --- sources/stockticker/src/Pair.jsx	2019-04-05 00:25:08.000000000 +0900
-+++ sources/stockticker-useReduxSelectors/src/Pair.jsx	2019-04-05 00:10:56.000000000 +0900
++++ sources/stockticker-useReduxSelectors/src/Pair.jsx	2019-04-05 20:53:01.000000000 +0900
 @@ -1,12 +1,22 @@
 -import React, { useRef, useEffect } from "react";
 -import { connect } from "react-redux";
-+import React, { useEffect, useMemo, useRef } from "react";
++import React, { useCallback, useEffect, useMemo, useRef } from "react";
 +import { useReduxSelectors } from "reactive-react-redux";
  
 -const mapState = (state, props) => state[props.sliceId][props.pairId];
 +const Pair = props => {
 +  const selectorMap = {
-+    value: state => ({ value: state[props.sliceId][props.pairId].value }),
-+    name: state => ({ name: state[props.sliceId][props.pairId].name }),
++    value: useCallback(state => ({ value: state[props.sliceId][props.pairId].value }), [props.sliceId, props.pairId]),
++    name: useCallback(state => ({ name: state[props.sliceId][props.pairId].name }), [props.sliceId, props.pairId]),
 +  };
 +  const { value, name } = useReduxSelectors(selectorMap);
  
