@@ -136,7 +136,7 @@ diff -ur sources/twitter-lite/src/Slice.jsx sources/twitter-lite-useReduxSelecto
 +export default Slice;
 diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-useReduxSelectors/src/TwitterLite.js
 --- sources/twitter-lite/src/TwitterLite.js	2019-03-27 20:38:57.000000000 +0900
-+++ sources/twitter-lite-useReduxSelectors/src/TwitterLite.js	2019-04-05 22:12:07.000000000 +0900
++++ sources/twitter-lite-useReduxSelectors/src/TwitterLite.js	2019-04-05 22:28:01.000000000 +0900
 @@ -1,45 +1,32 @@
 -import { connect } from "react-redux";
 -import { createSelector } from "reselect";
@@ -202,14 +202,14 @@ diff -ur sources/twitter-lite/src/TwitterLite.js sources/twitter-lite-useReduxSe
 +  return <InternalContainer />;
 +};
 +
-+const ExampleContainer = (props) => {
++const ExampleContainer = React.memo((props) => {
 +  const { result1 } = useReduxSelectors({
 +    result1: useCallback(state => ({ foo: "foobar" }), []),
 +  });
 +  const dispatch = useReduxDispatch();
 +  const actionFoobar = () => dispatch(foobar());
 +  return <Example />;
-+};
++});
 +
 +export default ExampleContainer;
 diff -ur sources/twitter-lite/src/index.js sources/twitter-lite-useReduxSelectors/src/index.js
