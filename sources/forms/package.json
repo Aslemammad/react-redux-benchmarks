@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "installConfig": {
-    "pnp": true
+    "pnp": false
   },
   "dependencies": {
     "chance": "^1.0.16",
