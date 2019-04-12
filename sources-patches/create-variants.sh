@@ -30,6 +30,11 @@ if [ ! -e sources/deeptree-useReduxState ]; then
 	patch -d sources/deeptree-useReduxState -p2 < sources-patches/deeptree-useReduxState
 fi
 
+if [ ! -e sources/deeptree-useReduxSelectors ]; then
+	cp -r sources/deeptree sources/deeptree-useReduxSelectors
+	patch -d sources/deeptree-useReduxSelectors -p2 < sources-patches/deeptree-useReduxSelectors
+fi
+
 if [ ! -e sources/twitter-lite-useReduxState ]; then
 	cp -r sources/twitter-lite sources/twitter-lite-useReduxState
 	patch -d sources/twitter-lite-useReduxState -p2 < sources-patches/twitter-lite-useReduxState

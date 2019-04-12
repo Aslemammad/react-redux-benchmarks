@@ -1,0 +1,181 @@
+diff -ur sources/deeptree/config-overrides.js sources/deeptree-useReduxSelectors/config-overrides.js
+--- sources/deeptree/config-overrides.js	2019-02-20 06:30:32.000000000 +0900
++++ sources/deeptree-useReduxSelectors/config-overrides.js	2019-04-12 23:57:48.000000000 +0900
+@@ -7,10 +7,9 @@
+             "react" : "React",
+             "redux" : "Redux",
+             "react-dom" : "ReactDOM",
+-            "react-redux" : "ReactRedux",
+         }
+     }
+ 
+ 
+     return config;
+-}
+\ No newline at end of file
++}
+diff -ur sources/deeptree/package.json sources/deeptree-useReduxSelectors/package.json
+--- sources/deeptree/package.json	2019-04-05 21:17:27.000000000 +0900
++++ sources/deeptree-useReduxSelectors/package.json	2019-04-12 23:58:18.000000000 +0900
+@@ -7,7 +7,7 @@
+     "fps-emit": "file:../../fps-emit",
+     "react": "^16.6.0",
+     "react-dom": "^16.6.0",
+-    "react-redux": "^5.1.0",
++    "reactive-react-redux": "dai-shi/reactive-react-redux#multiple-selectors",
+     "react-scripts": "2.0.3",
+     "redux": "^4.0.0",
+     "redux-starter-kit": "^0.4.3",
+Only in sources/deeptree-useReduxSelectors: package.json~
+diff -ur sources/deeptree/public/index.html sources/deeptree-useReduxSelectors/public/index.html
+--- sources/deeptree/public/index.html	2019-02-20 06:30:32.000000000 +0900
++++ sources/deeptree-useReduxSelectors/public/index.html	2019-04-12 23:57:48.000000000 +0900
+@@ -44,6 +44,5 @@
+     <script type="text/javascript" src="redux.min.js"></script>
+     <script type="text/javascript" src="react.production.min.js"></script>
+     <script type="text/javascript" src="react-dom.production.min.js"></script>
+-    <script type="text/javascript" src="react-redux.min.js"></script>
+   </body>
+ </html>
+diff -ur sources/deeptree/src/App.js sources/deeptree-useReduxSelectors/src/App.js
+--- sources/deeptree/src/App.js	2019-03-03 12:27:19.000000000 +0900
++++ sources/deeptree-useReduxSelectors/src/App.js	2019-04-13 00:01:39.000000000 +0900
+@@ -1,5 +1,5 @@
+ import React from "react";
+-import { connect } from "react-redux";
++import { useReduxDispatch, useReduxSelectors } from "reactive-react-redux";
+ 
+ import Slice from "./Slice";
+ import * as c from "./constants";
+@@ -16,31 +16,26 @@
+   return { slices };
+ };
+ 
+-const mapDispatch = { incrementRandomCounter };
+-
+-class App extends React.Component {
+-  render() {
+-    return (
+-      <div>
+-        <button onClick={this.props.incrementRandomCounter}>
+-          Update Random Counter
+-        </button>
+-        <div className="row">
+-          {this.props.slices.map((slice, idx) => {
+-            return (
+-              <div style={{ display: "inline-block", minWidth: 70 }} key={idx}>
+-                <Slice idx={slice} remainingDepth={c.TREE_DEPTH} />
+-              </div>
+-            );
+-          })}
+-        </div>
++const App = () => {
++  const { mapState: { slices } } = useReduxSelectors({ mapState });
++  const dispatch = useReduxDispatch();
++  return (
++    <div>
++      <button onClick={() => dispatch(incrementRandomCounter())}>
++        Update Random Counter
++      </button>
++      <div className="row">
++        {slices.map((slice, idx) => {
++          return (
++            <div style={{ display: "inline-block", minWidth: 70 }} key={idx}>
++              <Slice idx={slice} remainingDepth={c.TREE_DEPTH} />
++            </div>
++          );
++        })}
+       </div>
+-    );
+-  }
+-}
++    </div>
++  );
++};
+ App.displayName = "App";
+ 
+-export default connect(
+-  mapState,
+-  mapDispatch
+-)(App);
++export default App;
+Only in sources/deeptree-useReduxSelectors/src: App.js~
+diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-useReduxSelectors/src/Slice.jsx
+--- sources/deeptree/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
++++ sources/deeptree-useReduxSelectors/src/Slice.jsx	2019-04-13 00:03:51.000000000 +0900
+@@ -1,43 +1,30 @@
+-import React, { Component } from "react";
+-import { connect } from "react-redux";
++import React, { useCallback } from "react";
++import { useReduxSelectors } from "reactive-react-redux";
+ 
+-const mapStateToProps = (state, props) => {
+-  return {
+-    value: state[props.idx]
+-  };
+-};
+-
+-const Counter = ({ value }) => {
++const Counter = props => {
++  const { value } = useReduxSelectors({
++    value: useCallback(state => state[props.idx], [props.idx]),
++  });
++  const value = state[props.idx];
+   return <div>Value: {value}</div>;
+ };
+ 
+-const ConnectedCounter = connect(mapStateToProps)(Counter);
+-
+-class Slice extends Component {
+-  state = {};
+-
+-  componentDidMount = () => {
+-    //this.props.fillPairs(this.props.idx);
+-  };
++const Slice = props => {
++  const { remainingDepth, idx } = props;
+ 
+-  render() {
+-    const { remainingDepth, idx } = this.props;
+-
+-    if (remainingDepth > 0) {
+-      return (
++  if (remainingDepth > 0) {
++    return (
++      <div>
++        {idx}.{remainingDepth}
+         <div>
+-          {idx}.{remainingDepth}
+-          <div>
+-            <Slice idx={idx} remainingDepth={remainingDepth - 1} />
+-          </div>
++          <Slice idx={idx} remainingDepth={remainingDepth - 1} />
+         </div>
+-      );
+-    }
+-
+-    return <ConnectedCounter idx={idx} />;
++      </div>
++    );
+   }
+-}
++
++  return <Counter idx={idx} />;
++};
+ Slice.displayName = "Slice";
+ 
+ export default Slice;
+-//export default connect(mapStateToProps, actions)(Slice);
+Only in sources/deeptree-useReduxSelectors/src: Slice.jsx~
+diff -ur sources/deeptree/src/index.js sources/deeptree-useReduxSelectors/src/index.js
+--- sources/deeptree/src/index.js	2019-03-03 12:27:19.000000000 +0900
++++ sources/deeptree-useReduxSelectors/src/index.js	2019-04-12 23:57:48.000000000 +0900
+@@ -7,7 +7,7 @@
+ import * as c from "./constants";
+ import { initialize, incrementRandomCounter, incrementMany } from "./counters";
+ 
+-import { Provider } from "react-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
+ 
+ import configureStore from "./configureStore";
+ 
