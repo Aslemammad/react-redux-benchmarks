@@ -26,7 +26,6 @@ diff -ur sources/deeptree/package.json sources/deeptree-useReduxSelectors/packag
      "react-scripts": "2.0.3",
      "redux": "^4.0.0",
      "redux-starter-kit": "^0.4.3",
-Only in sources/deeptree-useReduxSelectors: package.json~
 diff -ur sources/deeptree/public/index.html sources/deeptree-useReduxSelectors/public/index.html
 --- sources/deeptree/public/index.html	2019-02-20 06:30:32.000000000 +0900
 +++ sources/deeptree-useReduxSelectors/public/index.html	2019-04-12 23:57:48.000000000 +0900
@@ -99,11 +98,10 @@ diff -ur sources/deeptree/src/App.js sources/deeptree-useReduxSelectors/src/App.
 -  mapDispatch
 -)(App);
 +export default App;
-Only in sources/deeptree-useReduxSelectors/src: App.js~
 diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-useReduxSelectors/src/Slice.jsx
 --- sources/deeptree/src/Slice.jsx	2019-03-03 12:27:19.000000000 +0900
-+++ sources/deeptree-useReduxSelectors/src/Slice.jsx	2019-04-13 00:03:51.000000000 +0900
-@@ -1,43 +1,30 @@
++++ sources/deeptree-useReduxSelectors/src/Slice.jsx	2019-04-13 00:14:55.000000000 +0900
+@@ -1,43 +1,29 @@
 -import React, { Component } from "react";
 -import { connect } from "react-redux";
 +import React, { useCallback } from "react";
@@ -120,7 +118,6 @@ diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-useReduxSelectors/src/S
 +  const { value } = useReduxSelectors({
 +    value: useCallback(state => state[props.idx], [props.idx]),
 +  });
-+  const value = state[props.idx];
    return <div>Value: {value}</div>;
  };
  
@@ -166,7 +163,6 @@ diff -ur sources/deeptree/src/Slice.jsx sources/deeptree-useReduxSelectors/src/S
  
  export default Slice;
 -//export default connect(mapStateToProps, actions)(Slice);
-Only in sources/deeptree-useReduxSelectors/src: Slice.jsx~
 diff -ur sources/deeptree/src/index.js sources/deeptree-useReduxSelectors/src/index.js
 --- sources/deeptree/src/index.js	2019-03-03 12:27:19.000000000 +0900
 +++ sources/deeptree-useReduxSelectors/src/index.js	2019-04-12 23:57:48.000000000 +0900
