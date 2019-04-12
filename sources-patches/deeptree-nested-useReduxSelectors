@@ -1,0 +1,301 @@
+diff -ur sources/deeptree-nested/config-overrides.js sources/deeptree-nested-useReduxSelectors/config-overrides.js
+--- sources/deeptree-nested/config-overrides.js	2019-03-27 20:38:57.000000000 +0900
++++ sources/deeptree-nested-useReduxSelectors/config-overrides.js	2019-04-12 22:46:13.000000000 +0900
+@@ -7,7 +7,6 @@
+       react: "React",
+       redux: "Redux",
+       "react-dom": "ReactDOM",
+-      "react-redux": "ReactRedux"
+     };
+   }
+ 
+diff -ur sources/deeptree-nested/package.json sources/deeptree-nested-useReduxSelectors/package.json
+--- sources/deeptree-nested/package.json	2019-04-05 21:17:27.000000000 +0900
++++ sources/deeptree-nested-useReduxSelectors/package.json	2019-04-12 22:46:37.000000000 +0900
+@@ -7,7 +7,7 @@
+     "fps-emit": "file:../../fps-emit",
+     "react": "^16.6.0",
+     "react-dom": "^16.6.0",
+-    "react-redux": "^5.1.0",
++    "reactive-react-redux": "dai-shi/reactive-react-redux#multiple-selectors",
+     "react-scripts": "2.0.3",
+     "redux": "^4.0.0",
+     "redux-starter-kit": "^0.4.3",
+diff -ur sources/deeptree-nested/public/index.html sources/deeptree-nested-useReduxSelectors/public/index.html
+--- sources/deeptree-nested/public/index.html	2019-03-27 20:38:57.000000000 +0900
++++ sources/deeptree-nested-useReduxSelectors/public/index.html	2019-04-12 22:46:13.000000000 +0900
+@@ -44,6 +44,5 @@
+     <script type="text/javascript" src="redux.min.js"></script>
+     <script type="text/javascript" src="react.production.min.js"></script>
+     <script type="text/javascript" src="react-dom.production.min.js"></script>
+-    <script type="text/javascript" src="react-redux.min.js"></script>
+   </body>
+ </html>
+diff -ur sources/deeptree-nested/src/App.js sources/deeptree-nested-useReduxSelectors/src/App.js
+--- sources/deeptree-nested/src/App.js	2019-03-27 20:38:57.000000000 +0900
++++ sources/deeptree-nested-useReduxSelectors/src/App.js	2019-04-12 22:57:06.000000000 +0900
+@@ -1,5 +1,5 @@
+ import React from "react";
+-import { connect } from "react-redux";
++import { useReduxSelectors, useReduxDispatch } from "reactive-react-redux";
+ 
+ import Slice from "./Slice";
+ import * as c from "./constants";
+@@ -23,57 +23,53 @@
+   return incrementMany({ mod });
+ }
+ 
+-const mapDispatch = {
+-  incrementRandomCounter,
+-  incrementFifth: () => doUpdateMany(5),
+-  incrementThird: () => doUpdateMany(3),
+-  appendRandomCharacter,
+-  appendMany: () => appendRandomCharToMany(4)
+-};
+-
+-class App extends React.Component {
+-  render() {
+-    return (
++const App = () => {
++  const { mapped: { slices } } = useReduxSelectors({ mapped: mapState });
++  const dispatch = useReduxDispatch();
++  const props = {
++    incrementRandomCounter: () => dispatch(incrementRandomCounter()),
++    incrementFifth: () => dispatch(doUpdateMany(5)),
++    incrementThird: () => dispatch(doUpdateMany(3)),
++    appendRandomCharacter: () => dispatch(appendRandomCharacter()),
++    appendMany: () => dispatch(appendRandomCharToMany(4)),
++  };
++  return (
++    <div>
+       <div>
+-        <div>
+-          <button
+-            id="incrementRandom"
+-            onClick={this.props.incrementRandomCounter}
+-          >
+-            Update Random Counter
+-          </button>
+-          <button id="incrementFifth" onClick={this.props.incrementFifth}>
+-            Update 1/5 Counters
+-          </button>
+-          <button id="incrementThird" onClick={this.props.incrementThird}>
+-            Update 1/3 Counters
+-          </button>
+-          <button
+-            id="appendRandomCharacter"
+-            onClick={this.props.appendRandomCharacter}
+-          >
+-            Append Random Char
+-          </button>
+-          <button id="appendMany" onClick={this.props.appendMany}>
+-            Append Char to Many
+-          </button>
+-        </div>
+-        <div className="row">
+-          {this.props.slices.map((slice, idx) => {
+-            return (
+-              <div style={{ display: "inline-block", minWidth: 70 }} key={idx}>
+-                <Slice idx={slice} remainingDepth={c.TREE_DEPTH} />
+-              </div>
+-            );
+-          })}
+-        </div>
++        <button
++          id="incrementRandom"
++          onClick={props.incrementRandomCounter}
++        >
++          Update Random Counter
++        </button>
++        <button id="incrementFifth" onClick={props.incrementFifth}>
++          Update 1/5 Counters
++        </button>
++        <button id="incrementThird" onClick={props.incrementThird}>
++          Update 1/3 Counters
++        </button>
++        <button
++          id="appendRandomCharacter"
++          onClick={props.appendRandomCharacter}
++        >
++          Append Random Char
++        </button>
++        <button id="appendMany" onClick={props.appendMany}>
++          Append Char to Many
++        </button>
+       </div>
+-    );
+-  }
++      <div className="row">
++        {slices.map((slice, idx) => {
++          return (
++            <div style={{ display: "inline-block", minWidth: 70 }} key={idx}>
++              <Slice idx={slice} remainingDepth={c.TREE_DEPTH} />
++            </div>
++          );
++        })}
++      </div>
++    </div>
++  );
+ }
+ App.displayName = "App";
+ 
+-export default connect(
+-  mapState,
+-  mapDispatch
+-)(App);
++export default App;
+diff -ur sources/deeptree-nested/src/Slice.jsx sources/deeptree-nested-useReduxSelectors/src/Slice.jsx
+--- sources/deeptree-nested/src/Slice.jsx	2019-03-27 20:38:57.000000000 +0900
++++ sources/deeptree-nested-useReduxSelectors/src/Slice.jsx	2019-04-12 22:54:21.000000000 +0900
+@@ -1,94 +1,67 @@
+-import React, { Component } from "react";
+-import { connect } from "react-redux";
++import React, { useCallback, useEffect } from "react";
++import { useReduxSelectors, useReduxDispatch } from "reactive-react-redux";
+ 
+ import { initialize, createStringId } from "./strings";
+ import { TEXT_INPUT_MOD } from "./constants";
+ 
+-const counterMapState = (state, props) => {
+-  return {
+-    value: state.counters[props.idx]
+-  };
+-};
+-
+-const Counter = ({ value }) => {
++const Counter = ({ idx }) => {
++  const { value } = useReduxSelectors({
++    value: useCallback(state => state.counters[idx], [idx]),
++  });
+   return <div>Value: {value}</div>;
+ };
+ 
+ Counter.displayName = "Counter";
+ 
+-const ConnectedCounter = connect(counterMapState)(Counter);
+-
+-const textMapState = (state, ownProps) => {
+-  const stringId = createStringId(ownProps.idx, ownProps.inputId); //`${ownProps.idx}-${ownProps.remainingDepth}`;
+-  const text = state.strings[stringId] || "unknown";
+-
+-  return { text, stringId };
++const TextDisplay = ({ idx, inputId, children }) => {
++  const { mapped: { stringId, text } } = useReduxSelectors({
++    mapped: useCallback(state => {
++      const stringId = createStringId(idx, inputId); //`${idx}-${remainingDepth}`;
++      const text = state.strings[stringId] || "unknown";
++      return { stringId, text };
++    }, [idx, inputId]);
++  });
++  const dispatch = useReduxDispatch();
++  useEffect(() => {
++    dispatch(initialize({ stringId }));
++  }, []);
++  return (
++    <div>
++      Text {stringId}:<br />
++      <textarea value={text} />
++      {children}
++    </div>
++  );
+ };
++TextDisplay.displayName = "TextDisplay";
+ 
+-const textMapDispatch = { initialize };
+-
+-class TextDisplay extends Component {
+-  componentDidMount() {
+-    const { stringId } = this.props;
+-    this.props.initialize({ stringId });
+-  }
+-
+-  render() {
+-    const { text, stringId, children } = this.props;
+-
+-    return (
++const Slice = ({ remainingDepth, idx }) => {
++  if (remainingDepth > 0) {
++    let renderedChild = (
+       <div>
+-        Text {stringId}:<br />
+-        <textarea value={text} />
+-        {children}
++        {idx}.{remainingDepth}
++        <div>
++          <Slice idx={idx} remainingDepth={remainingDepth - 1} />
++        </div>
+       </div>
+     );
+-  }
+-}
+-TextDisplay.displayName = "TextDisplay";
+-
+-const ConnectedTextDisplay = connect(
+-  textMapState,
+-  textMapDispatch
+-)(TextDisplay);
+-
+-class Slice extends Component {
+-  state = {};
+-
+-  componentDidMount = () => {
+-    //this.props.fillPairs(this.props.idx);
+-  };
+ 
+-  render() {
+-    const { remainingDepth, idx } = this.props;
+-
+-    if (remainingDepth > 0) {
+-      let renderedChild = (
+-        <div>
+-          {idx}.{remainingDepth}
+-          <div>
+-            <Slice idx={idx} remainingDepth={remainingDepth - 1} />
+-          </div>
+-        </div>
++    if (remainingDepth % TEXT_INPUT_MOD === 0) {
++      renderedChild = (
++        <TextDisplay
++          idx={idx}
++          inputId={remainingDepth / TEXT_INPUT_MOD}
++        >
++          {renderedChild}
++        </TextDisplay>
+       );
+-
+-      if (remainingDepth % TEXT_INPUT_MOD === 0) {
+-        renderedChild = (
+-          <ConnectedTextDisplay
+-            idx={idx}
+-            inputId={remainingDepth / TEXT_INPUT_MOD}
+-          >
+-            {renderedChild}
+-          </ConnectedTextDisplay>
+-        );
+-      }
+-
+-      return renderedChild;
+     }
+ 
+-    return <ConnectedCounter idx={idx} />;
++    return renderedChild;
+   }
+-}
++
++  return <Counter idx={idx} />;
++};
+ Slice.displayName = "Slice";
+ 
+ export default Slice;
+diff -ur sources/deeptree-nested/src/index.js sources/deeptree-nested-useReduxSelectors/src/index.js
+--- sources/deeptree-nested/src/index.js	2019-03-27 20:38:57.000000000 +0900
++++ sources/deeptree-nested-useReduxSelectors/src/index.js	2019-04-12 22:46:13.000000000 +0900
+@@ -7,7 +7,7 @@
+ import * as c from "./constants";
+ import { initialize, incrementRandomCounter, incrementMany } from "./counters";
+ 
+-import { Provider } from "react-redux";
++import { ReduxProvider as Provider } from "reactive-react-redux";
+ 
+ import configureStore from "./configureStore";
+ 

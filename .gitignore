@@ -81,4 +81,5 @@ sources/stockticker-useReduxState
 sources/stockticker-rrh
 sources/forms-useReduxState
 sources/deeptree-nested-useReduxState
+sources/deeptree-nested-useReduxSelectors
 sources/deeptree-nested-rrh

@@ -60,6 +60,11 @@ if [ ! -e sources/deeptree-nested-useReduxState ]; then
 	patch -d sources/deeptree-nested-useReduxState -p2 < sources-patches/deeptree-nested-useReduxState
 fi
 
+if [ ! -e sources/deeptree-nested-useReduxSelectors ]; then
+	cp -r sources/deeptree-nested sources/deeptree-nested-useReduxSelectors
+	patch -d sources/deeptree-nested-useReduxSelectors -p2 < sources-patches/deeptree-nested-useReduxSelectors
+fi
+
 if [ ! -e sources/deeptree-nested-rrh ]; then
 	cp -r sources/deeptree-nested sources/deeptree-nested-rrh
 	patch -d sources/deeptree-nested-rrh -p2 < sources-patches/deeptree-nested-rrh
