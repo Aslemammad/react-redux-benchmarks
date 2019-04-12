@@ -185,7 +185,7 @@ diff -ur sources/deeptree-nested/src/Slice.jsx sources/deeptree-nested-useReduxS
 +      const stringId = createStringId(idx, inputId); //`${idx}-${remainingDepth}`;
 +      const text = state.strings[stringId] || "unknown";
 +      return { stringId, text };
-+    }, [idx, inputId]);
++    }, [idx, inputId]),
 +  });
 +  const dispatch = useReduxDispatch();
 +  useEffect(() => {
