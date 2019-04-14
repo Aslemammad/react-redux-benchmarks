@@ -22,7 +22,7 @@ diff -ur sources/tree-view/package.json sources/tree-view-useReduxState/package.
      "react": "^16.6.0",
      "react-dom": "^16.6.0",
 -    "react-redux": "^5.0.7",
-+    "reactive-react-redux": "^1.7.0",
++    "reactive-react-redux": "^2.0.1",
      "redux": "^4.0",
      "schedule": "^0.3.0",
      "seedrandom": "^2.4.4"

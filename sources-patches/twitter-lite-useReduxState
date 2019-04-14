@@ -22,7 +22,7 @@ diff -ur sources/twitter-lite/package.json sources/twitter-lite-useReduxState/pa
      "react": "^16.6.0",
      "react-dom": "^16.6.0",
 -    "react-redux": "^5.0.7",
-+    "reactive-react-redux": "^1.7.0",
++    "reactive-react-redux": "^2.0.1",
      "react-scripts": "2.0.3",
      "redux": "^4.0.0",
      "reselect": "^3.0.1"
