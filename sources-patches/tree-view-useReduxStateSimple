@@ -53,7 +53,7 @@ diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-useReduxStat
  import React from 'react'
 -import { Component } from 'react'
 -import { connect } from 'react-redux'
-+import { useReduxDispatch, useReduxStateSimple } from 'reactive-react-redux'
++import { useReduxDispatch, useReduxStateSimple as useReduxState } from 'reactive-react-redux'
  import * as actions from '../actions'
  
 -export class Node extends Component {
@@ -64,7 +64,7 @@ diff -ur sources/tree-view/src/containers/Node.js sources/tree-view-useReduxStat
 -
 -  handleAddChildClick = e => {
 +const Node = ({ id, parentId }) => {
-+  const state = useReduxStateSimple();
++  const state = useReduxState();
 +  const dispatch = useReduxDispatch();
 +  const handleIncrementClick = () => {
 +    dispatch(actions.increment(id));
