@@ -17,7 +17,7 @@ diff -ur sources/deeptree-nested/package.json sources/deeptree-nested-useReduxSt
      "react": "^16.6.0",
      "react-dom": "^16.6.0",
 -    "react-redux": "^5.1.0",
-+    "reactive-react-redux": "^2.0.1",
++    "reactive-react-redux": "^3.0.0",
      "react-scripts": "2.0.3",
      "redux": "^4.0.0",
      "redux-starter-kit": "^0.4.3",
