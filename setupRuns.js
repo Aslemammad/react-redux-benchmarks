@@ -13,7 +13,7 @@ rimraf.sync(join(__dirname, "runs", "*"));
 console.log(`installing global dependencies of all benchmarks...`);
 let installTask = spawn.sync("yarn", [""], {
   cwd: __dirname,
-  stdio: "inherit"
+  stdio: "inherit",
 });
 if (installTask.status > 0) {
   process.exit(installTask.status);
@@ -21,7 +21,7 @@ if (installTask.status > 0) {
 
 installTask = spawn.sync("yarn", [""], {
   cwd: join(__dirname, "fps-emit"),
-  stdio: "inherit"
+  stdio: "inherit",
 });
 if (installTask.status > 0) {
   process.exit(installTask.status);
@@ -29,21 +29,21 @@ if (installTask.status > 0) {
 
 installTask = spawn.sync("yarn", ["build"], {
   cwd: join(__dirname, "fps-emit"),
-  stdio: "inherit"
+  stdio: "inherit",
 });
 if (installTask.status > 0) {
   process.exit(installTask.status);
 }
 
 const sources = readdirSync(join(__dirname, "sources"));
-sources.forEach(benchmark => {
+sources.forEach((benchmark) => {
   const src = join(__dirname, "sources", benchmark);
   let cwd;
   cwd = src;
   console.log(`installing dependencies of benchmark ${benchmark}...`);
   let installTask = spawn.sync("yarn", [""], {
     cwd,
-    stdio: "inherit"
+    stdio: "inherit",
   });
   if (installTask.status > 0) {
     process.exit(installTask.status);
@@ -52,14 +52,14 @@ sources.forEach(benchmark => {
   const filesToCopy = [
     "react.production.min.js",
     "react-dom.production.min.js",
-    "redux.min.js"
+    "redux.min.js",
   ];
 
-  filesToCopy.forEach(filename => {
+  filesToCopy.forEach((filename) => {
     copyFile(
       join(__dirname, "copy-to-public", filename),
       join(src, "public", filename),
-      e => {
+      (e) => {
         if (e) {
           console.log(e);
           process.exit(1);
@@ -71,7 +71,7 @@ sources.forEach(benchmark => {
   console.log(`building production version of benchmark ${benchmark}...`);
   installTask = spawn.sync("yarn", ["build"], {
     cwd,
-    stdio: "inherit"
+    stdio: "inherit",
   });
   if (installTask.status > 0) {
     process.exit(installTask.status);
