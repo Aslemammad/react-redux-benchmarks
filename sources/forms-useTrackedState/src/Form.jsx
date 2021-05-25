@@ -7,7 +7,7 @@ import * as c from "./constants";
 
 const mapState = (state, ownProps) => {
   return {
-    text: state[ownProps.id]
+    text: state[ownProps.id],
   };
 };
 
@@ -15,12 +15,12 @@ const Form = ({ id }) => {
   const dispatch = useDispatch();
   const state = useTrackedState();
   const text = state[id];
-  const onChange = e => {
+  const onChange = (e) => {
     dispatch(updateInput({ inputId: id, text: e.target.value }));
   };
 
   const fillers = Array.from({
-    length: c.NUMBER_OF_CHECKBOXES_PER_FORM
+    length: c.NUMBER_OF_CHECKBOXES_PER_FORM,
   }).map((item, i) => <input type="checkbox" key={i} />);
 
   return (

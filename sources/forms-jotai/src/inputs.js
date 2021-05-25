@@ -1,24 +1,5 @@
-import { createSlice } from "redux-starter-kit";
 import * as c from "./constants";
 import userEvent from "user-event";
-
-const { reducer, actions } = createSlice({
-  initialState: {},
-  reducers: {
-    initialize(state, action) {
-      const { numberOfInputs } = action.payload;
-      for (let i = 0; i < numberOfInputs; i++) {
-        state[i] = "";
-      }
-    },
-    updateInput(state, action) {
-      const { inputId, text } = action.payload;
-      state[inputId] = text;
-    }
-  }
-});
-
-export const { initialize, updateInput } = actions;
 
 const BOB_ROSS_IPSUM = `
 Little short strokes. And I know you're saying, 'Oh Bob, you've done it this 
@@ -35,5 +16,3 @@ export function typeTextInRandomInput() {
 
   return userEvent.type(input, BOB_ROSS_IPSUM, { delay: 25 });
 }
-
-export default reducer;

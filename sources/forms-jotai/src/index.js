@@ -1,19 +1,11 @@
 import React, { unstable_Profiler as Profiler } from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
+import { Provider as JotaiProvider } from "jotai";
 import "./index.css";
 import App from "./App";
 import "fps-emit";
 
-import * as c from "./constants";
-
-import { initialize, typeTextInRandomInput } from "./inputs";
-
-import configureStore from "./configureStore";
-
-const store = configureStore();
-
-store.dispatch(initialize({ numberOfInputs: c.NUMBER_OF_INPUTS }));
+import { typeTextInRandomInput } from "./inputs";
 
 const renderResults = [];
 window.renderResults = renderResults;
@@ -37,15 +29,15 @@ function onAppRendered(
     baseTime,
     startTime,
     commitTime,
-    interactions
+    interactions,
   });
 }
 
 ReactDOM.render(
   <Profiler id="appProfiler" onRender={onAppRendered}>
-    <Provider store={store}>
+    <JotaiProvider>
       <App />
-    </Provider>
+    </JotaiProvider>
   </Profiler>,
   document.getElementById("root")
 );
