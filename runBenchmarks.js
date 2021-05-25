@@ -9,16 +9,20 @@ const _ = require("lodash");
 
 const serverUtils = require("./utils/server.js");
 
-const sources = readdirSync(join(__dirname, "sources"));
-const benchmarks = [...new Set(sources.map(
-  s => s.replace(/-(connect|useSelector|useTrackedState)$/, '')
-))];
+let sources = readdirSync(join(__dirname, "sources"));
+// sources = sources.filter((v, i) => v.includes("jotai"));
+const benchmarks = [
+  ...new Set(
+    sources.map((s) => s.replace(/-(connect|useSelector|useTrackedState)$/, ""))
+  ),
+];
 
 const VERSIONS_FOLDER = join(__dirname, "react-redux-versions");
 
-const versions = readdirSync(VERSIONS_FOLDER).map(version =>
+let versions = readdirSync(VERSIONS_FOLDER).map((version) =>
   version.replace("react-redux-", "").replace(".min.js", "")
 );
+// versions = [versions[0]];
 
 const reduxVersions = process.env.REDUX
   ? process.env.REDUX.trim().split(":")
@@ -68,13 +72,13 @@ function printBenchmarkResults(benchmark, versionPerfEntries) {
       "Avg FPS",
       "Render\n(Mount, Avg)",
       ...traceCategories,
-      "FPS Values"
-    ]
+      "FPS Values",
+    ],
   });
 
   Object.keys(versionPerfEntries)
     .sort()
-    .forEach(version => {
+    .forEach((version) => {
       const versionResults = versionPerfEntries[version];
 
       const { fps, profile, mountTime, averageUpdateTime } = versionResults;
@@ -85,18 +89,18 @@ function printBenchmarkResults(benchmark, versionPerfEntries) {
         traceResults = [
           profile.categories.scripting.toFixed(2),
           profile.categories.rendering.toFixed(2),
-          profile.categories.painting.toFixed(2)
+          profile.categories.painting.toFixed(2),
         ];
       }
 
-      const fpsNumbers = fps.values.map(entry => entry.FPS);
+      const fpsNumbers = fps.values.map((entry) => entry.FPS);
 
       table.push([
         version,
         fps.weightedFPS.toFixed(2),
         `${mountTime.toFixed(1)}, ${averageUpdateTime.toFixed(1)}`,
         ...traceResults,
-        fpsNumbers.toString()
+        fpsNumbers.toString(),
       ]);
     });
 
@@ -120,7 +124,7 @@ function calculateBenchmarkStats(fpsRunResults, categories, traceRunResults) {
 
   const pairwiseEntries = pairwise(fpsValuesWithoutFirst);
 
-  const fpsValuesWithDurations = pairwiseEntries.map(pair => {
+  const fpsValuesWithDurations = pairwiseEntries.map((pair) => {
     const [first, second] = pair;
     const duration = second.timestamp - first.timestamp;
     const durationSeconds = duration / 1000.0;
@@ -134,7 +138,7 @@ function calculateBenchmarkStats(fpsRunResults, categories, traceRunResults) {
 
       return {
         weightedFPS: prev.weightedFPS + weightedFPS,
-        durationSeconds: prev.durationSeconds + current.durationSeconds
+        durationSeconds: prev.durationSeconds + current.durationSeconds,
       };
     },
     { FPS: 0, weightedFPS: 0, durationSeconds: 0 }
@@ -148,6 +152,7 @@ function calculateBenchmarkStats(fpsRunResults, categories, traceRunResults) {
 
   const [mountEntry, ...updateEntries] = reactTimingEntries;
 
+  debugger;
   const mountTime = mountEntry.actualTime;
 
   const averageUpdateTime =
@@ -167,11 +172,22 @@ async function runBenchmarks() {
 
     for (let i = 0; i < reduxTypeVersions.length; i++) {
       const [type, version] = reduxTypeVersions[i];
-      const source = join(__dirname, "runs", `${benchmark}-${type}`);
+      const source = join(
+        __dirname,
+        "runs",
+        benchmark.includes("redux") ? `${benchmark}-${type}` : `${benchmark}`
+      );
       const toRun = join(source, version);
       console.log(`  react-redux type-version: ${type}-${version}`);
       const browser = await puppeteer.launch({
-        //headless: false
+        executablePath: "/usr/bin/chromium-browser",
+        args: [
+          "--disable-gpu",
+          "--no-sandbox",
+          "--lang=en-US",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+        ],
       });
 
       const URL = "http://localhost:9999";

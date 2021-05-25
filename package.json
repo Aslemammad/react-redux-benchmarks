@@ -4,10 +4,10 @@
   "description": "benchmark suite and runner for react-redux",
   "main": "index.js",
   "scripts": {
-    "initialize": "node ./setupRuns.js",
+    "initialize": "SKIP_PREFLIGHT_CHECK=true node ./setupRuns.js",
     "start": "node ./runBenchmarks.js",
     "test": "jest",
-    "format" : "prettier --write \"sources/**/src/*.{js,jsx}\" *.js"
+    "format": "prettier --write \"sources/**/src/*.{js,jsx}\" *.js"
   },
   "repository": {
     "type": "git",
@@ -28,9 +28,11 @@
     "cli-table2": "^0.2.0",
     "cross-spawn": "^6.0.5",
     "express": "^4.16.4",
+    "jotai": "^0.16.5",
     "puppeteer": "^1.7.0",
     "recursive-copy": "^2.0.9",
-    "tracealyzer": "^0.9.3"
+    "tracealyzer": "^0.9.3",
+    "typescript": "^4.2.4"
   },
   "devDependencies": {
     "prettier": "^1.16.4"

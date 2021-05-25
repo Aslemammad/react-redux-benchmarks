@@ -8,7 +8,7 @@ const tracealyzer = require("tracealyzer");
 
 const { join } = require("path");
 
-const timeout = ms => new Promise(res => setTimeout(res, ms));
+const timeout = (ms) => new Promise((res) => setTimeout(res, ms));
 
 module.exports = {
   runServer(port, sources) {
@@ -18,7 +18,7 @@ module.exports = {
 
     return new Promise((resolve, reject) => {
       // eslint-disable-line
-      app.use(err => {
+      app.use((err) => {
         reject(err);
       });
       const server = app.listen(port, () => {
@@ -62,12 +62,13 @@ module.exports = {
         await page.evaluate(() => JSON.stringify(window.getFpsStats()))
       ) || [];
 
+    debugger;
     const reactTimingEntries =
       JSON.parse(
         await page.evaluate(() => JSON.stringify(window.renderResults))
       ) || [];
 
-    fpsValues = fpsStatsEntries.map(entry => {
+    fpsValues = fpsStatsEntries.map((entry) => {
       const { FPS, isFinal } = entry.meta.details;
       return { FPS, timestamp: entry.timeStamp, isFinal };
     });
@@ -75,5 +76,5 @@ module.exports = {
     await page.close();
 
     return { fpsValues, traceMetrics, start, end, reactTimingEntries };
-  }
+  },
 };
