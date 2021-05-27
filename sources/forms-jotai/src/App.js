@@ -1,6 +1,5 @@
 import React from "react";
 import { atom, useAtom } from "jotai";
-import { atomFamily } from "jotai/utils";
 
 import Form from "./Form";
 import * as c from "./constants";
@@ -13,24 +12,22 @@ async function infiniteBobRoss() {
   }
 }
 
-const slicesFamily = atomFamily(() => atom(""));
-
-const slicesAtomsAtom = atom(() => {
+const initializeAtoms = () => {
   const atoms = [];
   for (let key = 0; key < c.NUMBER_OF_INPUTS; key++) {
-    atoms.push(slicesFamily(key));
+    atoms.push(atom(""));
   }
   return atoms;
-});
+};
+
+const atoms = initializeAtoms();
 
 const App = () => {
-  const [slicesAtoms] = useAtom(slicesAtomsAtom);
-
   return (
     <div>
       <button onClick={infiniteBobRoss}>Type Text</button>
       <div className="row">
-        {slicesAtoms.map((sliceAtom, idx) => {
+        {atoms.map((sliceAtom, idx) => {
           return (
             <div
               style={{ display: "inline-block", minWidth: 70 }}
