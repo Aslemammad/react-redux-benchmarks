@@ -1,6 +1,5 @@
 /* eslint no-console: 0 */
 "use strict";
-
 const { join, normalize } = require("path");
 const { readdirSync, copyFileSync, existsSync } = require("fs");
 const puppeteer = require("puppeteer");
@@ -9,11 +8,18 @@ const _ = require("lodash");
 
 const serverUtils = require("./utils/server.js");
 
+const filterKeywords = ["deeptree"];
+
 let sources = readdirSync(join(__dirname, "sources"));
-// sources = sources.filter((v, i) => v.includes("jotai"));
+
+// filter deeptree-nested* for now
+sources = sources.filter(
+  (v, i) => !filterKeywords.some((keyword) => v.includes(keyword))
+);
+
 const benchmarks = [
   ...new Set(
-    sources.map((s) => s.replace(/-(connect|useSelector|useTrackedState)$/, ""))
+    sources.map((s) => s.replace(/-(useSelector|useTrackedState)$/, ""))
   ),
 ];
 
@@ -28,14 +34,15 @@ const reduxVersions = process.env.REDUX
   ? process.env.REDUX.trim().split(":")
   : versions;
 const reduxTypeVersions = reduxVersions.reduce((a, v) => {
-  if (v.startsWith("rrr-")) {
-    return a.concat([["useSelector", v], ["useTrackedState", v]]);
-  }
-  const [, major, minor] = /^(\d+)\.(\d+)\./.exec(v);
-  if (major >= 7 && minor >= 1) {
-    return a.concat([["connect", v], ["useSelector", v]]);
-  }
-  return a.concat([["connect", v]]);
+  // if (v.startsWith("rrr-")) {
+  // return a.concat([["useSelector", v], ["useTrackedState", v]]);
+  return a.concat([["useSelector", v]]);
+  // }
+  // const [, major, minor] = /^(\d+)\.(\d+)\./.exec(v);
+  // if (major >= 7 && minor >= 1) {
+  //   return a.concat([["connect", v], ["useSelector", v]]);
+  // }
+  // return a.concat([["connect", v]]);
 }, []);
 const benchmarksToRun = process.env.BENCHMARKS
   ? process.env.BENCHMARKS.split(":")
@@ -175,7 +182,7 @@ async function runBenchmarks() {
       const source = join(
         __dirname,
         "runs",
-        benchmark.includes("redux") ? `${benchmark}-${type}` : `${benchmark}`
+        benchmark.includes("jotai") ? `${benchmark}` : `${benchmark}-${type}`
       );
       const toRun = join(source, version);
       console.log(`  react-redux type-version: ${type}-${version}`);
@@ -240,6 +247,7 @@ async function runBenchmarks() {
         await browser.close();
       }
     }
+
     printBenchmarkResults(benchmark, versionPerfEntries);
   }
 
