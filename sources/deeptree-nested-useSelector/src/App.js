@@ -37,10 +37,7 @@ const App = () => {
   return (
     <div>
       <div>
-        <button
-          id="incrementRandom"
-          onClick={actionIncrementRandomCounter}
-        >
+        <button id="incrementRandom" onClick={actionIncrementRandomCounter}>
           Update Random Counter
         </button>
         <button id="incrementFifth" onClick={actionIncrementFifth}>

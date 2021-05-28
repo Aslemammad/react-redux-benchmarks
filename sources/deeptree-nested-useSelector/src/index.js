@@ -1,4 +1,4 @@
-import React, { unstable_Profiler as Profiler } from "react";
+import React, { Profiler } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
