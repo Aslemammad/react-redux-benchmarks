@@ -13,11 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/reduxjs/react-redux-benchmarks.git"
   },
-  "keywords": [
-    "react-redux",
-    "benchmark",
-    "redux"
-  ],
+  "keywords": ["react-redux", "benchmark", "redux"],
   "author": "Gregory Beaver <greg.beaver.cello@gmail.com>",
   "license": "MIT",
   "bugs": {
