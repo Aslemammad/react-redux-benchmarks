@@ -20,19 +20,14 @@
   },
   "scripts": {
     "start": "react-app-rewired  start",
-    "build": "react-app-rewired  build",
+    "build": "react-scripts build",
     "test": "react-app-rewired  --env=jsdom",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
   "devDependencies": {
     "react-app-rewired": "^2.1.0"
   }
