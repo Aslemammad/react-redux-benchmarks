@@ -1,6 +1,6 @@
-import React, { unstable_Profiler as Profiler } from "react";
+import React, { Profiler } from "react";
 import ReactDOM from "react-dom";
-import { Provider } from "react-redux";
+import { Provider } from "reactive-react-redux";
 import "./index.css";
 import App from "./App";
 import "fps-emit";
@@ -37,7 +37,7 @@ function onAppRendered(
     baseTime,
     startTime,
     commitTime,
-    interactions
+    interactions,
   });
 }
 

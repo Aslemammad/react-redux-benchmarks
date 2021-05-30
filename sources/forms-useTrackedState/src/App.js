@@ -1,5 +1,5 @@
 import React from "react";
-import { useTrackedState } from "react-redux";
+import { useTrackedState } from "reactive-react-redux";
 
 import Form from "./Form";
 import * as c from "./constants";
@@ -19,7 +19,7 @@ async function infiniteBobRoss() {
 const App = () => {
   const state = useTrackedState();
   if (!slicesNaiveCache) {
-    slicesNaiveCache = Object.keys(state).map(key => Number(key));
+    slicesNaiveCache = Object.keys(state).map((key) => Number(key));
     //slicesNaiveCache.sort();
   }
   const slices = slicesNaiveCache;
