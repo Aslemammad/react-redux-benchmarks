@@ -1,4 +1,4 @@
-import React, { Profiler } from "react";
+import React, { unstable_Profiler as Profiler } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "reactive-react-redux";
 import "./index.css";
@@ -11,6 +11,7 @@ import { initialize, typeTextInRandomInput } from "./inputs";
 
 import configureStore from "./configureStore";
 
+console.log(React);
 const store = configureStore();
 
 store.dispatch(initialize({ numberOfInputs: c.NUMBER_OF_INPUTS }));
@@ -27,6 +28,7 @@ function onAppRendered(
   commitTime,
   interactions = []
 ) {
+  console.log(id, phase, actualTime, baseTime, commitTime, interactions);
   if (!Array.isArray(interactions)) {
     interactions = [...interactions];
   }
