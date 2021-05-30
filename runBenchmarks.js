@@ -35,8 +35,8 @@ const reduxVersions = process.env.REDUX
   : versions;
 const reduxTypeVersions = reduxVersions.reduce((a, v) => {
   // if (v.startsWith("rrr-")) {
-  // return a.concat([["useSelector", v], ["useTrackedState", v]]);
-  return a.concat([["useSelector", v]]);
+  return a.concat([["useSelector", v], ["useTrackedState", v]]);
+  // return a.concat([["useSelector", v]]);
   // }
   // const [, major, minor] = /^(\d+)\.(\d+)\./.exec(v);
   // if (major >= 7 && minor >= 1) {
